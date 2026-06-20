@@ -1,0 +1,98 @@
+# 🚀 Como colocar o sistema no ar — Grupo Fibravit
+## Só 5 passos, sem complicação!
+
+---
+
+## ✅ PASSO 1 — Criar repositório no GitHub
+
+1. Acesse **https://github.com** (já tem conta!)
+2. Clique no botão verde **"New"** (canto superior esquerdo)
+3. Em "Repository name" coloque: **`fibravit-visitas`**
+4. Deixe como **Public**
+5. Clique em **"Create repository"**
+6. Na próxima tela, clique em **"uploading an existing file"**
+7. **Arraste TODOS os arquivos desta pasta** para a área de upload
+   - server.js
+   - package.json
+   - render.yaml
+   - pasta public/ (com index.html e dashboard.html)
+8. Clique em **"Commit changes"**
+
+---
+
+## ✅ PASSO 2 — Criar conta no Render
+
+1. Acesse **https://render.com**
+2. Clique em **"Get Started for Free"**
+3. Clique em **"Continue with GitHub"**
+4. Autorize o acesso
+
+---
+
+## ✅ PASSO 3 — Criar o serviço no Render
+
+1. No painel do Render, clique em **"New +"**
+2. Escolha **"Web Service"**
+3. Clique em **"Connect"** ao lado do repositório `fibravit-visitas`
+4. Preencha assim:
+   - **Name:** `fibravit-visitas`
+   - **Region:** `Oregon (US West)` (deixe o padrão)
+   - **Branch:** `main`
+   - **Build Command:** `npm install`
+   - **Start Command:** `node server.js`
+   - **Instance Type:** `Free`
+5. Clique em **"Create Web Service"**
+
+---
+
+## ✅ PASSO 4 — Adicionar disco persistente (para os dados não se perderem)
+
+1. No painel do seu serviço no Render, clique em **"Disks"** no menu lateral
+2. Clique em **"Add Disk"**
+3. Preencha:
+   - **Name:** `fibravit-db`
+   - **Mount Path:** `/data`
+   - **Size:** `1 GB`
+4. Clique em **"Save"**
+5. Adicione a variável de ambiente:
+   - Clique em **"Environment"** no menu lateral
+   - Clique em **"Add Environment Variable"**
+   - **Key:** `DB_DIR` | **Value:** `/data`
+6. Clique em **"Save Changes"**
+
+---
+
+## ✅ PASSO 5 — Acessar o sistema!
+
+1. Aguarde o deploy terminar (2-3 minutos — aparece "Live" em verde)
+2. Clique no link que aparece no topo (algo como `https://fibravit-visitas.onrender.com`)
+3. **Pronto! Sistema no ar!** 🎉
+
+---
+
+## 📱 Links para compartilhar no WhatsApp:
+
+```
+Formulário (celular):
+https://fibravit-visitas.onrender.com
+
+Dashboard + Relatórios:
+https://fibravit-visitas.onrender.com/dashboard.html
+```
+
+---
+
+## ⚠️ Aviso importante sobre o plano gratuito do Render:
+
+O plano gratuito "dorme" após 15 minutos sem uso.
+Na primeira vez que abrir, pode demorar 30-60 segundos para carregar.
+Depois que carregou, funciona normalmente.
+
+**Para evitar isso:** existe um plano pago ($7/mês) que mantém sempre ativo.
+Ou posso configurar um "ping automático" gratuito para manter acordado!
+
+---
+
+## 🆘 Precisa de ajuda?
+
+Me mande prints de cada etapa que te oriento em tempo real!

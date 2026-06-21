@@ -3,74 +3,144 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Grupo Fibravit — Dashboard</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport"/>
+<title>Grupo Fibravit — Sistema de Visitas</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root{--azul:#1F4E79;--azul2:#2E75B6;--azul-bg:#EBF2FA;--verde:#276221;--verde-bg:#C6EFCE;--verm:#9C0006;--verm-bg:#FFC7CE;--amar:#7B5E00;--amar-bg:#FFEB9C;--cinza:#595959;--borda:#D0D8E4;--r:12px;--sh:0 2px 12px rgba(31,78,121,.10)}
+:root{
+  --azul:#1F4E79;--azul2:#2E75B6;--azul-bg:#EBF2FA;
+  --verde:#276221;--verde-bg:#C6EFCE;
+  --verm:#9C0006;--verm-bg:#FFC7CE;
+  --amar:#7B5E00;--amar-bg:#FFEB9C;
+  --cinza:#595959;--borda:#D0D8E4;
+  --r:12px;--sh:0 2px 14px rgba(31,78,121,.10);
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#222}
-header{background:var(--azul);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.18)}
-header h1{font-size:1.1rem;font-weight:800}
-nav{display:flex;gap:8px}
-nav a{color:rgba(255,255,255,.85);text-decoration:none;padding:7px 16px;border-radius:8px;font-size:.82rem;font-weight:700;border:1.5px solid rgba(255,255,255,.3);transition:all .2s}
-nav a:hover,nav a.active{background:rgba(255,255,255,.18);color:#fff}
-.wrap{max-width:1100px;margin:0 auto;padding:20px 16px}
-.filters{background:#fff;border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-bottom:20px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
-.fg{display:flex;flex-direction:column;gap:3px}
-.fg label{font-size:.75rem;font-weight:700;color:var(--azul)}
-.fg select,.fg input{padding:7px 11px;border:1.5px solid var(--borda);border-radius:7px;font-size:.83rem;min-width:120px}
-.btn{padding:8px 18px;border:none;border-radius:8px;font-weight:700;font-size:.83rem;cursor:pointer;transition:all .2s}
-.btn-primary{background:var(--azul);color:#fff}
-.btn-outline{background:#e8edf2;color:var(--azul)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#222;min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--azul);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2);position:sticky;top:0;z-index:200}
+.topbar h1{font-size:1rem;font-weight:800}
+.nav-tabs{display:flex;gap:6px}
+.nav-tab{padding:7px 13px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.8);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s}
+.nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.6)}
+
+/* ── PÁGINAS ── */
+.page{display:none;padding:16px;max-width:860px;margin:0 auto}
+.page.active{display:block}
+
+/* ── AVISO API ── */
+.api-banner{background:var(--amar-bg);border:1.5px solid #d69e2e;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:.85rem;color:var(--amar)}
+.api-banner strong{display:block;margin-bottom:4px;font-size:.9rem}
+.api-input{width:100%;padding:9px 12px;border:1.5px solid #d69e2e;border-radius:8px;font-size:.85rem;margin-top:8px;background:#fff}
+.btn-salvar-api{margin-top:8px;padding:9px 20px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.85rem;cursor:pointer}
+
+/* ── FORM ── */
+.prog-wrap{height:5px;background:rgba(255,255,255,.2);position:sticky;top:52px;z-index:199}
+.prog-fill{height:100%;background:#5BC8F5;transition:width .4s}
+.step-nav{display:flex;overflow-x:auto;gap:6px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--borda);scrollbar-width:none}
+.step-nav::-webkit-scrollbar{display:none}
+.step-btn{flex-shrink:0;padding:5px 12px;border-radius:16px;border:1.5px solid var(--borda);background:#fff;color:var(--cinza);font-size:.73rem;font-weight:700;cursor:pointer}
+.step-btn.active{background:var(--azul);color:#fff;border-color:var(--azul)}
+.step-btn.done{background:var(--verde-bg);color:var(--verde);border-color:var(--verde)}
+.step{display:none}.step.active{display:block;animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:18px;margin-bottom:16px}
+.sec-bar{background:var(--azul);color:#fff;padding:9px 14px;border-radius:8px;font-weight:700;font-size:.88rem;margin-bottom:12px}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:.78rem;font-weight:700;color:var(--azul);margin-bottom:4px}
+.req{color:#e53e3e}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:.92rem;background:#fafbfc;transition:border-color .2s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--azul2);background:#fff}
+.field textarea{min-height:80px;resize:vertical}
+.field select{-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231F4E79' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.pill{padding:8px 15px;border:1.5px solid var(--borda);border-radius:20px;cursor:pointer;font-size:.83rem;font-weight:600;color:#555;background:#fafbfc;transition:all .2s;user-select:none}
+.pill.p-sim{border-color:var(--verde);background:var(--verde-bg);color:var(--verde)}
+.pill.p-nao{border-color:var(--verm);background:var(--verm-bg);color:var(--verm)}
+.pill.p-par{border-color:#d69e2e;background:var(--amar-bg);color:var(--amar)}
+.pill.p-sel{border-color:var(--azul);background:var(--azul-bg);color:var(--azul)}
+.pill.p-alta{border-color:#e53e3e;background:#FFF0F0;color:#e53e3e}
+.pill.p-media{border-color:#d69e2e;background:var(--amar-bg);color:var(--amar)}
+.pill.p-baixa{border-color:var(--verde);background:var(--verde-bg);color:var(--verde)}
+.chk-list{display:flex;flex-direction:column;gap:6px}
+.chk-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--borda);border-radius:8px;cursor:pointer;background:#fafbfc;transition:all .2s}
+.chk-item.on{border-color:var(--azul);background:var(--azul-bg)}
+.chk-box{width:20px;height:20px;border:2px solid var(--borda);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;transition:all .2s}
+.chk-item.on .chk-box{background:var(--azul);border-color:var(--azul);color:#fff}
+.chk-item span{font-size:.86rem}
+.btn{padding:12px 20px;border:none;border-radius:9px;font-size:.93rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--azul);color:#fff;box-shadow:0 3px 10px rgba(31,78,121,.25)}
 .btn-success{background:#1a7a3c;color:#fff}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
-.kpi{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh);text-align:center;border-top:4px solid var(--azul)}
+.btn-outline{background:#e8edf2;color:var(--azul)}
+.nav-btns{display:flex;gap:10px;margin-top:4px;margin-bottom:18px}
+.nav-btns .btn{flex:1;justify-content:center}
+.mat-item{border:1.5px solid var(--borda);border-radius:9px;padding:12px;margin-bottom:10px;position:relative}
+.mat-del{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--verm);font-size:1rem;cursor:pointer}
+#success{display:none;text-align:center;padding:40px 20px}
+#success .big{font-size:4rem;margin-bottom:12px}
+#success h2{color:var(--verde);font-size:1.4rem;margin-bottom:8px}
+.id-badge{display:inline-block;background:var(--azul-bg);color:var(--azul);font-size:1.5rem;font-weight:800;padding:10px 28px;border-radius:10px;margin:12px 0 20px}
+
+/* ── DASHBOARD ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:#fff;border-radius:var(--r);padding:15px;box-shadow:var(--sh);text-align:center;border-top:4px solid var(--azul)}
 .kpi.g{border-top-color:#276221}.kpi.r{border-top-color:#9C0006}.kpi.y{border-top-color:#d69e2e}
-.kpi .n{font-size:2rem;font-weight:800;color:var(--azul);line-height:1}
+.kpi .n{font-size:1.9rem;font-weight:800;color:var(--azul);line-height:1}
 .kpi.g .n{color:#276221}.kpi.r .n{color:#9C0006}.kpi.y .n{color:#7B5E00}
-.kpi .l{font-size:.73rem;color:var(--cinza);margin-top:5px;font-weight:600}
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-@media(max-width:600px){.chart-grid{grid-template-columns:1fr}}
-.chart-card{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
-.chart-card h3{font-size:.88rem;color:var(--azul);font-weight:700;margin-bottom:12px}
-.chart-card canvas{max-height:200px}
-.card{background:#fff;border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:18px}
-.card-title{font-size:.95rem;font-weight:800;color:var(--azul);margin-bottom:14px}
-.coord-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.coord-card{background:#f8fafc;border-radius:10px;padding:14px;border:1px solid var(--borda)}
+.kpi .l{font-size:.72rem;color:var(--cinza);margin-top:4px;font-weight:600}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:580px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{background:#fff;border-radius:var(--r);padding:15px;box-shadow:var(--sh)}
+.chart-card h3{font-size:.85rem;color:var(--azul);font-weight:700;margin-bottom:10px}
+.chart-card canvas{max-height:190px}
+.coord-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+.coord-card{background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
 .coord-card h4{font-size:.88rem;color:var(--azul);font-weight:700;margin-bottom:8px}
-.cs{display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0;border-bottom:1px solid var(--borda)}
+.cs{display:flex;justify-content:space-between;font-size:.78rem;padding:3px 0;border-bottom:1px solid var(--borda)}
 .cs:last-child{border:none}
 .cs span:last-child{font-weight:700;color:var(--azul)}
+.filters{background:#fff;border-radius:var(--r);padding:13px 15px;box-shadow:var(--sh);margin-bottom:16px;display:flex;flex-wrap:wrap;gap:9px;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:.73rem;font-weight:700;color:var(--azul)}
+.fg select,.fg input{padding:7px 10px;border:1.5px solid var(--borda);border-radius:7px;font-size:.82rem;min-width:110px}
+.btn-sm{padding:7px 16px;font-size:.8rem;border-radius:7px}
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:.82rem}
-th{background:var(--azul);color:#fff;padding:9px 11px;text-align:left;white-space:nowrap}
-td{padding:8px 11px;border-bottom:1px solid var(--borda);vertical-align:middle}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{background:var(--azul);color:#fff;padding:8px 10px;text-align:left;white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid var(--borda);vertical-align:middle}
 tr:hover td{background:var(--azul-bg)}
-.badge{display:inline-block;padding:2px 9px;border-radius:16px;font-size:.73rem;font-weight:700}
+.badge{display:inline-block;padding:2px 8px;border-radius:14px;font-size:.71rem;font-weight:700}
 .b-sim{background:var(--verde-bg);color:var(--verde)}
 .b-nao{background:var(--verm-bg);color:var(--verm)}
 .b-par{background:var(--amar-bg);color:var(--amar)}
 .b-alta{background:var(--verm-bg);color:var(--verm)}
 .b-media{background:var(--amar-bg);color:var(--amar)}
 .b-baixa{background:var(--verde-bg);color:var(--verde)}
+.card-title{font-size:.95rem;font-weight:800;color:var(--azul);margin-bottom:12px}
+.empty{text-align:center;padding:28px;color:#aaa;font-size:.88rem}
+
+/* ── MODAL RELATÓRIO ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center}
 .overlay.open{display:flex}
-.modal{background:#fff;border-radius:var(--r);width:92%;max-width:720px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.25)}
-.modal-hdr{background:var(--azul);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-radius:var(--r) var(--r) 0 0;position:sticky;top:0}
-.modal-hdr h2{font-size:.95rem}
+.modal{background:#fff;border-radius:var(--r);width:93%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.25)}
+.modal-hdr{background:var(--azul);color:#fff;padding:13px 17px;display:flex;justify-content:space-between;align-items:center;border-radius:var(--r) var(--r) 0 0;position:sticky;top:0}
+.modal-hdr h2{font-size:.92rem}
 .modal-close{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer}
-.modal-body{padding:20px}
-.modal-foot{padding:12px 18px;border-top:1px solid var(--borda);display:flex;gap:8px;justify-content:flex-end}
-.rel-sec{margin-bottom:16px}
-.rel-bar{background:var(--azul);color:#fff;padding:7px 13px;border-radius:6px;font-size:.85rem;font-weight:700;margin-bottom:8px}
-.rel-row{display:flex;gap:8px;margin-bottom:5px;font-size:.84rem}
-.rel-lbl{font-weight:700;color:var(--azul);min-width:170px;flex-shrink:0}
+.modal-body{padding:18px}
+.modal-foot{padding:11px 17px;border-top:1px solid var(--borda);display:flex;gap:8px;justify-content:flex-end}
+.rel-sec{margin-bottom:14px}
+.rel-bar{background:var(--azul);color:#fff;padding:6px 12px;border-radius:6px;font-size:.83rem;font-weight:700;margin-bottom:7px}
+.rel-row{display:flex;gap:8px;margin-bottom:4px;font-size:.82rem}
+.rel-lbl{font-weight:700;color:var(--azul);min-width:160px;flex-shrink:0}
 .rel-val{color:#333}
 .ok{color:var(--verde);font-weight:700}.no{color:var(--verm);font-weight:700}.pa{color:var(--amar);font-weight:700}
+
 @media print{
-  header,nav,.filters,.kpi-grid,.chart-grid,.coord-grid,.tbl-wrap,.modal-hdr,.modal-foot{display:none!important}
+  .topbar,.prog-wrap,.step-nav,.nav-btns,.filters,.kpi-grid,.chart-grid,.coord-grid,.tbl-wrap,.modal-hdr,.modal-foot,.api-banner,.nav-tabs{display:none!important}
   .overlay{position:static!important;background:none!important;display:block!important}
   .modal{width:100%!important;max-height:none!important;box-shadow:none!important}
   body{background:#fff!important}
@@ -79,14 +149,255 @@ tr:hover td{background:var(--azul-bg)}
 </style>
 </head>
 <body>
-<header>
-<h1>📊 Grupo Fibravit — Dashboard Operacional</h1>
-<nav>
-<a href="/">📋 Novo Relatório</a>
-<a class="active" href="/dashboard.html">📊 Dashboard</a>
-</nav>
-</header>
-<div class="wrap">
+<div class="topbar">
+<h1>📋 Grupo Fibravit — Visitas</h1>
+<div class="nav-tabs">
+<button class="nav-tab active" onclick="showPage('form')">📝 Formulário</button>
+<button class="nav-tab" onclick="showPage('dash')">📊 Dashboard</button>
+</div>
+</div>
+<div class="prog-wrap" id="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<!-- ══════════════════════════════════════════════════════
+     FORMULÁRIO
+══════════════════════════════════════════════════════ -->
+<div class="page active" id="page-form">
+<!-- Banner configuração API -->
+<div class="api-banner" id="api-banner">
+<strong>⚙️ Configure o link do Google Sheets (só uma vez)</strong>
+    Cole aqui o link do Web App gerado no Google Apps Script:
+    <input class="api-input" id="api-url-input" placeholder="https://script.google.com/macros/s/SEU_ID/exec"/>
+<button class="btn-salvar-api" onclick="salvarApi()">✅ Salvar e começar</button>
+</div>
+<div class="step-nav" id="step-nav">
+<button class="step-btn active" onclick="goStep(0)">1. Identificação</button>
+<button class="step-btn" onclick="goStep(1)">2. Contatos</button>
+<button class="step-btn" onclick="goStep(2)">3. Serviços</button>
+<button class="step-btn" onclick="goStep(3)">4. Materiais</button>
+<button class="step-btn" onclick="goStep(4)">5. Pendências</button>
+<button class="step-btn" onclick="goStep(5)">6. Avaliação</button>
+</div>
+<div style="max-width:620px;margin:0 auto">
+<!-- STEP 1 -->
+<div class="step active" id="s0">
+<div class="card">
+<div class="sec-bar">📍 1. Identificação da Visita</div>
+<div class="field"><label>Empresa <span class="req">*</span></label>
+<select id="f-empresa"><option value="">Selecione...</option><option>Fibravit</option><option>Service</option></select>
+</div>
+<div class="field"><label>Coordenador <span class="req">*</span></label>
+<select id="f-coord">
+<option value="">Selecione...</option>
+<option>Davi Lobato</option><option>Jhully Prado</option>
+<option>Gabriel Daher Regio</option><option>José Afonso Altoé</option><option>Outro</option>
+</select>
+</div>
+<div class="row2">
+<div class="field"><label>Data <span class="req">*</span></label><input id="f-data" type="date"/></div>
+<div class="field"><label>Horário <span class="req">*</span></label><input id="f-hora" type="time"/></div>
+</div>
+<div class="field"><label>Equipe presente</label><input id="f-equipe" placeholder="Nomes dos membros" type="text"/></div>
+<div class="field"><label>Cliente / Evento <span class="req">*</span></label><input id="f-cliente" placeholder="Ex: Sebrae / Feira João Neiva" type="text"/></div>
+<div class="row2">
+<div class="field"><label>Local / Cidade <span class="req">*</span></label><input id="f-local" placeholder="Ex: João Neiva - ES" type="text"/></div>
+<div class="field"><label>Nº Contrato / OS</label><input id="f-os" placeholder="Opcional" type="text"/></div>
+</div>
+<div class="field"><label>Tipo de visita <span class="req">*</span></label>
+<select id="f-tipo">
+<option value="">Selecione...</option>
+<option>Manutenção</option><option>Abastecimento</option>
+<option>Manutenção + Abastecimento</option><option>Visita comercial / Relacionamento</option>
+<option>Evento / Feira</option><option>Inspeção geral</option><option>Outro</option>
+</select>
+</div>
+<div class="field"><label>Objetivo da visita <span class="req">*</span></label>
+<textarea id="f-objetivo" placeholder="Descreva o motivo e o que deveria ser feito..."></textarea>
+</div>
+</div>
+<div class="nav-btns"><button class="btn btn-primary" onclick="nextStep(0)">Próximo ›</button></div>
+</div>
+<!-- STEP 2 -->
+<div class="step" id="s1">
+<div class="card">
+<div class="sec-bar">🤝 2. Contatos com o Cliente</div>
+<div class="field"><label>Houve contato com o cliente? <span class="req">*</span></label>
+<div class="pills" id="pg-contato">
+<div class="pill" onclick="setPill('contato','Sim',this,'p-sim')">✅ Sim</div>
+<div class="pill" onclick="setPill('contato','Não',this,'p-nao')">❌ Não</div>
+</div>
+</div>
+<div class="field" id="fd-pessoas">
+<label>Pessoas contatadas</label>
+<textarea id="f-pessoas" placeholder="Nome — Cargo / Empresa — Assunto tratado
+(uma por linha)"></textarea>
+</div>
+<div class="field" id="fd-motivo" style="display:none">
+<label>Motivo de não ter havido contato</label>
+<textarea id="f-motivo" placeholder="Ex: Feira ainda não havia aberto..."></textarea>
+</div>
+<hr style="border:none;border-top:1px solid var(--borda);margin:12px 0"/>
+<div class="field"><label>Próximo contato agendado?</label>
+<div class="pills" id="pg-prox">
+<div class="pill" onclick="setPill('proximo','Sim',this,'p-sim');document.getElementById('fd-prox').style.display='block'">Sim</div>
+<div class="pill" onclick="setPill('proximo','Não',this,'p-nao');document.getElementById('fd-prox').style.display='none'">Não</div>
+</div>
+</div>
+<div class="field" id="fd-prox" style="display:none">
+<label>Data / hora</label><input id="f-prox-data" type="datetime-local"/>
+</div>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" onclick="prevStep(1)">‹ Anterior</button>
+<button class="btn btn-primary" onclick="nextStep(1)">Próximo ›</button>
+</div>
+</div>
+<!-- STEP 3 -->
+<div class="step" id="s2">
+<div class="card">
+<div class="sec-bar">🔧 3. Serviços e Atividades</div>
+<div class="field"><label>Serviços executados</label>
+<div class="chk-list" id="chk-serv">
+<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Abastecimento de água"/><div class="chk-box">✓</div><span>💧 Abastecimento de água</span></div>
+<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Sucção / esgotamento"/><div class="chk-box">✓</div><span>🔄 Sucção / esgotamento</span></div>
+<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Manutenção"/><div class="chk-box">✓</div><span>🔩 Manutenção</span></div>
+<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Limpeza geral"/><div class="chk-box">✓</div><span>🧹 Limpeza geral</span></div>
+<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Entrega de materiais"/><div class="chk-box">✓</div><span>📦 Entrega de materiais</span></div>
+<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Inspeção geral"/><div class="chk-box">✓</div><span>🔍 Inspeção geral</span></div>
+</div>
+</div>
+<div class="field"><label>Descrição detalhada / manutenções</label>
+<textarea id="f-desc" placeholder="Peças trocadas, procedimentos, tempo gasto..." style="min-height:100px"></textarea>
+</div>
+<div class="field"><label>Registro no CheckMob? <span class="req">*</span></label>
+<div class="pills" id="pg-chk">
+<div class="pill" onclick="setPill('checkmob','Sim',this,'p-sim')">✅ Sim</div>
+<div class="pill" onclick="setPill('checkmob','Não',this,'p-nao')">❌ Não</div>
+<div class="pill" onclick="setPill('checkmob','Parcial',this,'p-par')">⚠️ Parcial</div>
+</div>
+</div>
+<div class="field"><label>Fotos / evidências? <span class="req">*</span></label>
+<div class="pills" id="pg-foto">
+<div class="pill" onclick="setPill('fotos','Sim',this,'p-sim')">✅ Sim</div>
+<div class="pill" onclick="setPill('fotos','Não',this,'p-nao')">❌ Não</div>
+<div class="pill" onclick="setPill('fotos','N/A',this,'p-par')">N/A</div>
+</div>
+</div>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" onclick="prevStep(2)">‹ Anterior</button>
+<button class="btn btn-primary" onclick="nextStep(2)">Próximo ›</button>
+</div>
+</div>
+<!-- STEP 4 -->
+<div class="step" id="s3">
+<div class="card">
+<div class="sec-bar">📦 4. Materiais Entregues</div>
+<p style="font-size:.8rem;color:#888;margin-bottom:12px">Registre todos os materiais deixados no local.</p>
+<div id="mat-list">
+<div class="mat-item">
+<div class="row2">
+<div class="field"><label>Material / Item</label><input class="mn" placeholder="Ex: Papel toalha" type="text"/></div>
+<div class="field"><label>Qtd. entregue</label><input class="mq" placeholder="Ex: 5 rolos" type="text"/></div>
+</div>
+</div>
+</div>
+<button onclick="addMat()" style="width:100%;padding:9px;border:2px dashed var(--azul2);border-radius:8px;background:var(--azul-bg);color:var(--azul);font-weight:700;font-size:.86rem;cursor:pointer;margin-bottom:12px" type="button">+ Adicionar material</button>
+<div class="field"><label>Recibo / NF emitida?</label>
+<div class="pills" id="pg-rec">
+<div class="pill" onclick="setPill('recibo','Sim',this,'p-sim')">✅ Sim</div>
+<div class="pill" onclick="setPill('recibo','Não',this,'p-nao')">❌ Não</div>
+<div class="pill" onclick="setPill('recibo','N/A',this,'p-par')">N/A</div>
+</div>
+</div>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" onclick="prevStep(3)">‹ Anterior</button>
+<button class="btn btn-primary" onclick="nextStep(3)">Próximo ›</button>
+</div>
+</div>
+<!-- STEP 5 -->
+<div class="step" id="s4">
+<div class="card">
+<div class="sec-bar">⚠️ 5. Pendências</div>
+<div class="field"><label>Há itens pendentes?</label>
+<div class="pills" id="pg-pend">
+<div class="pill" onclick="setPill('tem_pend','Sim',this,'p-nao');document.getElementById('pend-det').style.display='block'">⚠️ Sim</div>
+<div class="pill" onclick="setPill('tem_pend','Não',this,'p-sim');document.getElementById('pend-det').style.display='none'">✅ Não</div>
+</div>
+</div>
+<div id="pend-det" style="display:none">
+<div class="field"><label>Descrição das pendências <span class="req">*</span></label>
+<textarea id="f-pend" placeholder="Descreva detalhadamente..." style="min-height:100px"></textarea>
+</div>
+<div class="field"><label>Prioridade</label>
+<div class="pills" id="pg-prior">
+<div class="pill" onclick="setPill('prior','Alta',this,'p-alta')">🔴 Alta</div>
+<div class="pill" onclick="setPill('prior','Média',this,'p-media')">🟡 Média</div>
+<div class="pill" onclick="setPill('prior','Baixa',this,'p-baixa')">🟢 Baixa</div>
+</div>
+</div>
+<div class="row2">
+<div class="field"><label>Responsável</label><input id="f-resp" placeholder="Nome" type="text"/></div>
+<div class="field"><label>Prazo</label><input id="f-prazo" type="date"/></div>
+</div>
+</div>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" onclick="prevStep(4)">‹ Anterior</button>
+<button class="btn btn-primary" onclick="nextStep(4)">Próximo ›</button>
+</div>
+</div>
+<!-- STEP 6 -->
+<div class="step" id="s5">
+<div class="card">
+<div class="sec-bar">📊 6. Avaliação</div>
+<div class="field"><label>A visita atingiu seus objetivos? <span class="req">*</span></label>
+<div class="pills" id="pg-obj">
+<div class="pill" onclick="setPill('obj','Totalmente',this,'p-sim')">✅ Totalmente</div>
+<div class="pill" onclick="setPill('obj','Parcialmente',this,'p-par')">⚠️ Parcialmente</div>
+<div class="pill" onclick="setPill('obj','Não',this,'p-nao')">❌ Não</div>
+</div>
+</div>
+<div class="field"><label>Satisfação do cliente</label>
+<div class="pills" id="pg-sat">
+<div class="pill" onclick="setPill('sat','Ótimo',this,'p-sim')">😄 Ótimo</div>
+<div class="pill" onclick="setPill('sat','Bom',this,'p-sim')">🙂 Bom</div>
+<div class="pill" onclick="setPill('sat','Regular',this,'p-par')">😐 Regular</div>
+<div class="pill" onclick="setPill('sat','Ruim',this,'p-nao')">😞 Ruim</div>
+<div class="pill" onclick="setPill('sat','N/A',this,'p-sel')">N/A</div>
+</div>
+</div>
+<div class="field"><label>Observações gerais</label>
+<textarea id="f-obs" placeholder="Situações incomuns, oportunidades, feedbacks..." style="min-height:110px"></textarea>
+</div>
+<p style="font-size:.78rem;color:#888;background:var(--amar-bg);padding:9px 12px;border-radius:8px;margin-top:4px">
+        ⚠️ Verifique tudo antes de enviar. Os dados serão salvos no Google Sheets.
+      </p>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" onclick="prevStep(5)">‹ Anterior</button>
+<button class="btn btn-success" onclick="submitForm()" style="flex:2">✅ Enviar Relatório</button>
+</div>
+</div>
+<!-- SUCCESS -->
+<div id="success">
+<div class="big">✅</div>
+<h2>Relatório enviado!</h2>
+<p>Dados salvos no Google Sheets com sucesso.</p>
+<div class="id-badge">ID: <span id="suc-id">—</span></div>
+<p style="margin-bottom:22px;color:#777;font-size:.86rem">Guarde este ID para consultar no dashboard.</p>
+<button class="btn btn-primary" onclick="location.reload()">+ Nova Visita</button>
+<button class="btn btn-outline" onclick="showPage('dash')" style="margin-left:8px">📊 Dashboard</button>
+</div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-dash">
+<div class="api-banner" id="api-banner-dash" style="display:none">
+<strong>⚙️ Configure o link do Google Sheets primeiro</strong>
+    Vá para a aba Formulário e configure o link do Web App.
+  </div>
 <!-- Filtros -->
 <div class="filters">
 <div class="fg"><label>Empresa</label>
@@ -101,13 +412,10 @@ tr:hover td{background:var(--azul-bg)}
 </div>
 <div class="fg"><label>De</label><input id="df-de" type="date"/></div>
 <div class="fg"><label>Até</label><input id="df-ate" type="date"/></div>
-<div class="fg"><label>Cliente</label><input id="df-cli" placeholder="Buscar..." style="min-width:130px" type="text"/></div>
-<div class="fg"><label>CheckMob</label>
-<select id="df-chk"><option value="">Todos</option><option>Sim</option><option>Não</option><option>Parcial</option></select>
-</div>
-<button class="btn btn-primary" onclick="renderDash()">🔍 Filtrar</button>
-<button class="btn btn-outline" onclick="clearFilters()">✕ Limpar</button>
-<button class="btn btn-success" onclick="exportExcel()">⬇️ Excel</button>
+<div class="fg"><label>Cliente</label><input id="df-cli" placeholder="Buscar..." style="min-width:110px" type="text"/></div>
+<button class="btn btn-primary btn-sm" onclick="applyFilters()">🔍 Filtrar</button>
+<button class="btn btn-outline btn-sm" onclick="clearFilters()">✕ Limpar</button>
+<button class="btn btn-sm" onclick="loadDash()" style="background:#276221;color:#fff">🔄 Atualizar</button>
 </div>
 <!-- KPIs -->
 <div class="kpi-grid" id="kpi-grid"></div>
@@ -125,7 +433,7 @@ tr:hover td{background:var(--azul-bg)}
 </div>
 <!-- Tabela -->
 <div class="card">
-<div class="card-title">📋 Histórico de Visitas <span id="cnt" style="font-size:.78rem;color:#aaa;font-weight:400"></span></div>
+<div class="card-title">📋 Histórico de Visitas <span id="cnt" style="font-size:.76rem;color:#aaa;font-weight:400"></span></div>
 <div class="tbl-wrap">
 <table>
 <thead><tr>
@@ -134,8 +442,8 @@ tr:hover td{background:var(--azul-bg)}
 </tr></thead>
 <tbody id="tbody"></tbody>
 </table>
-<div id="empty" style="text-align:center;padding:30px;color:#aaa;display:none">
-        Nenhuma visita registrada. <a href="/" style="color:var(--azul)">Registre a primeira!</a>
+<div class="empty" id="empty" style="display:none">
+        Nenhuma visita encontrada. <a href="#" onclick="showPage('form')" style="color:var(--azul)">Registre a primeira!</a>
 </div>
 </div>
 </div>
@@ -149,93 +457,234 @@ tr:hover td{background:var(--azul-bg)}
 </div>
 <div class="modal-body" id="modal-body"></div>
 <div class="modal-foot">
-<button class="btn btn-outline" onclick="closeModal()">Fechar</button>
-<button class="btn" onclick="window.print()" style="background:#1a7a3c;color:#fff">🖨️ Imprimir / Salvar PDF</button>
+<button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
+<button class="btn btn-sm" onclick="window.print()" style="background:#1a7a3c;color:#fff;padding:8px 20px;font-weight:700;border:none;border-radius:8px;cursor:pointer">🖨️ Imprimir / PDF</button>
 </div>
 </div>
 </div>
 <script>
-let allData=[];
-let charts={};
+// ══════════════════════════════════════════════════════════════
+// CONFIGURAÇÃO
+// ══════════════════════════════════════════════════════════════
+let API_URL = localStorage.getItem('fibravit_api_url') || 'https://script.google.com/macros/s/AKfycbyO4C24JK80Z7EwEiTBP_ZqZrmfWRrnZZp31oZJ65cDbZvxvk93pq60Hw7L0vqUpYFy/exec';
+let allData = [];
+let charts  = {};
+const pills = {};
 
-async function loadData(){
-  try{
-    const res=await fetch('/api/kpis');
-    const kpis=await res.json();
-    allData=kpis.visitas||[];
-    renderAll(kpis,allData);
-  }catch(e){
-    document.getElementById('empty').style.display='block';
-    document.getElementById('empty').textContent='Erro ao carregar dados. Verifique se o servidor está rodando.';
+function salvarApi() {
+  const url = document.getElementById('api-url-input').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    alert('URL inválida. Deve começar com https://script.google.com');
+    return;
+  }
+  API_URL = url;
+  localStorage.setItem('fibravit_api_url', url);
+  document.getElementById('api-banner').style.display = 'none';
+  alert('✅ Link salvo! Agora você pode usar o sistema.');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('api-banner').style.display = 'none'; // Link já configurado
+  else document.getElementById('api-url-input').value = API_URL;
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('f-data').value = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  document.getElementById('f-hora').value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+});
+
+// ══════════════════════════════════════════════════════════════
+// NAVEGAÇÃO
+// ══════════════════════════════════════════════════════════════
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.querySelectorAll('.nav-tab')[p === 'form' ? 0 : 1].classList.add('active');
+  document.getElementById('prog-wrap').style.display = p === 'form' ? 'block' : 'none';
+  if (p === 'dash') loadDash();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════════════════════
+// FORMULÁRIO — STEPS
+// ══════════════════════════════════════════════════════════════
+let curStep = 0;
+function goStep(n) {
+  document.querySelectorAll('.step').forEach((s,i) => s.classList.toggle('active', i===n));
+  document.querySelectorAll('.step-btn').forEach((b,i) => { b.classList.remove('active'); if(i===n) b.classList.add('active'); });
+  curStep = n;
+  document.getElementById('prog').style.width = (n/5*100) + '%';
+  document.getElementById('step-nav').children[n].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function markDone(n) { const b=document.querySelectorAll('.step-btn')[n]; b.classList.remove('active'); b.classList.add('done'); }
+function nextStep(n) { if(!validateStep(n)) return; markDone(n); goStep(n+1); }
+function prevStep(n) { goStep(n-1); }
+
+function validateStep(n) {
+  if(n===0) {
+    const ids=['f-empresa','f-coord','f-data','f-hora','f-cliente','f-local','f-tipo','f-objetivo'];
+    for(const id of ids) { if(!document.getElementById(id).value.trim()) { alert('Preencha todos os campos obrigatórios (*).'); document.getElementById(id).focus(); return false; } }
+  }
+  if(n===1 && !pills['contato']) { alert('Informe se houve contato com o cliente.'); return false; }
+  if(n===2) { if(!pills['checkmob']) { alert('Informe o status do CheckMob.'); return false; } if(!pills['fotos']) { alert('Informe o status das fotos.'); return false; } }
+  if(n===5 && !pills['obj']) { alert('Informe se a visita atingiu seus objetivos.'); return false; }
+  return true;
+}
+
+function setPill(key, val, el, cls) {
+  pills[key] = val;
+  el.closest('.pills').querySelectorAll('.pill').forEach(p => p.className = 'pill');
+  el.classList.add(cls);
+  if(key==='contato') {
+    document.getElementById('fd-pessoas').style.display = val==='Sim' ? 'block' : 'none';
+    document.getElementById('fd-motivo').style.display  = val==='Não' ? 'block' : 'none';
   }
 }
 
-function getFiltered(){
-  const emp=document.getElementById('df-emp').value;
-  const coord=document.getElementById('df-coord').value;
-  const de=document.getElementById('df-de').value;
-  const ate=document.getElementById('df-ate').value;
-  const cli=document.getElementById('df-cli').value.toLowerCase();
-  const chk=document.getElementById('df-chk').value;
-  return allData.filter(v=>{
-    if(emp&&v['Empresa']!==emp)return false;
-    if(coord&&v['Coordenador']!==coord)return false;
-    if(de&&v['Data da Visita']<de)return false;
-    if(ate&&v['Data da Visita']>ate)return false;
-    if(cli&&!(v['Cliente / Evento']||'').toLowerCase().includes(cli))return false;
-    if(chk&&v['Registro no CheckMob?']!==chk)return false;
+function toggleChk(el) { const cb=el.querySelector('input'); cb.checked=!cb.checked; el.classList.toggle('on',cb.checked); }
+
+function addMat() {
+  const d=document.createElement('div'); d.className='mat-item';
+  d.innerHTML=`<button class="mat-del" onclick="this.parentElement.remove()">✕</button>
+    <div class="row2">
+      <div class="field"><label>Material / Item</label><input type="text" class="mn" placeholder="Ex: Papel higiênico"/></div>
+      <div class="field"><label>Qtd. entregue</label><input type="text" class="mq" placeholder="Ex: 10 rolos"/></div>
+    </div>`;
+  document.getElementById('mat-list').appendChild(d);
+}
+
+function getMateriais() {
+  return [...document.querySelectorAll('.mat-item')].map(i => {
+    const n=i.querySelector('.mn').value.trim(); const q=i.querySelector('.mq').value.trim();
+    return n ? n+(q?' ('+q+')':'') : '';
+  }).filter(Boolean).join('; ');
+}
+
+function getServicos() {
+  const checked=[...document.querySelectorAll('#chk-serv input:checked')].map(c=>c.value);
+  const desc=document.getElementById('f-desc').value.trim();
+  return [checked.join(', '), desc].filter(Boolean).join(' | ');
+}
+
+async function submitForm() {
+  if(!API_URL) { alert('Configure o link do Google Sheets primeiro!'); return; }
+  const btn = document.querySelector('.btn-success');
+  btn.disabled=true; btn.textContent='⏳ Enviando...';
+  const pend = pills['tem_pend']==='Sim';
+  const payload = {
+    data_visita:         document.getElementById('f-data').value,
+    horario:             document.getElementById('f-hora').value,
+    empresa:             document.getElementById('f-empresa').value,
+    coordenador:         document.getElementById('f-coord').value,
+    equipe:              document.getElementById('f-equipe').value,
+    cliente:             document.getElementById('f-cliente').value,
+    local:               document.getElementById('f-local').value,
+    contrato:            document.getElementById('f-os').value,
+    tipo_visita:         document.getElementById('f-tipo').value,
+    objetivo:            document.getElementById('f-objetivo').value,
+    contato_cliente:     pills['contato']||'',
+    pessoas_contatadas:  pills['contato']==='Sim' ? document.getElementById('f-pessoas').value : document.getElementById('f-motivo').value,
+    proximo_contato:     document.getElementById('f-prox-data').value||'',
+    servicos:            getServicos(),
+    checkmob:            pills['checkmob']||'',
+    fotos:               pills['fotos']||'',
+    materiais:           getMateriais(),
+    recibo:              pills['recibo']||'',
+    pendencias:          pend ? document.getElementById('f-pend').value : '',
+    prioridade:          pend ? (pills['prior']||'') : '',
+    responsavel_pend:    pend ? document.getElementById('f-resp').value : '',
+    prazo_pend:          pend ? document.getElementById('f-prazo').value : '',
+    objetivos_atingidos: pills['obj']||'',
+    satisfacao:          pills['sat']||'',
+    observacoes:         document.getElementById('f-obs').value,
+  };
+  try {
+    const res = await fetch(API_URL, { method:'POST', body: JSON.stringify(payload) });
+    const data = await res.json();
+    if(data.success) {
+      document.getElementById('suc-id').textContent = data.id;
+      document.querySelectorAll('.step').forEach(s => s.style.display='none');
+      document.getElementById('step-nav').style.display='none';
+      document.getElementById('success').style.display='block';
+      document.getElementById('prog').style.width='100%';
+    } else { alert('Erro: '+data.error); btn.disabled=false; btn.textContent='✅ Enviar Relatório'; }
+  } catch(e) {
+    alert('Erro de conexão. Verifique o link do Google Sheets.');
+    btn.disabled=false; btn.textContent='✅ Enviar Relatório';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════════════
+async function loadDash() {
+  if(!API_URL) { document.getElementById('api-banner-dash').style.display='block'; return; }
+  document.getElementById('api-banner-dash').style.display='none';
+  try {
+    const res = await fetch(API_URL + '?action=get');
+    const data = await res.json();
+    allData = data.visitas || [];
+    renderDash(allData);
+  } catch(e) {
+    document.getElementById('empty').style.display='block';
+    document.getElementById('empty').textContent='Erro ao carregar dados. Verifique o link do Google Sheets.';
+  }
+}
+
+function applyFilters() {
+  const emp   = document.getElementById('df-emp').value;
+  const coord = document.getElementById('df-coord').value;
+  const de    = document.getElementById('df-de').value;
+  const ate   = document.getElementById('df-ate').value;
+  const cli   = document.getElementById('df-cli').value.toLowerCase();
+  const filtered = allData.filter(v => {
+    if(emp   && v['Empresa']!==emp) return false;
+    if(coord && v['Coordenador']!==coord) return false;
+    if(de    && v['Data da Visita']<de) return false;
+    if(ate   && v['Data da Visita']>ate) return false;
+    if(cli   && !(v['Cliente / Evento']||'').toLowerCase().includes(cli)) return false;
     return true;
   });
+  renderDash(filtered);
 }
 
-function clearFilters(){
-  ['df-emp','df-coord','df-chk'].forEach(id=>document.getElementById(id).value='');
-  ['df-de','df-ate','df-cli'].forEach(id=>document.getElementById(id).value='');
-  renderAll(calcKpis(allData),allData);
+function clearFilters() {
+  ['df-emp','df-coord'].forEach(id => document.getElementById(id).value='');
+  ['df-de','df-ate','df-cli'].forEach(id => document.getElementById(id).value='');
+  renderDash(allData);
 }
 
-function renderDash(){const d=getFiltered();renderAll(calcKpis(d),d);}
+function renderDash(data) {
+  // KPIs
+  const t=data.length;
+  const cc=data.filter(v=>v['Houve Contato com Cliente?']==='Sim').length;
+  const sc=data.filter(v=>v['Houve Contato com Cliente?']==='Não').length;
+  const ck=data.filter(v=>v['Registro no CheckMob?']==='Sim').length;
+  const cp=data.filter(v=>v['Itens Pendentes']&&v['Itens Pendentes'].trim()).length;
+  const al=data.filter(v=>v['Prioridade Pendências']==='Alta').length;
+  const ot=data.filter(v=>v['Visita Atingiu Objetivos?']==='Totalmente').length;
+  const op=data.filter(v=>v['Visita Atingiu Objetivos?']==='Parcialmente').length;
 
-function calcKpis(data){
-  const porMes={},porTipo={},coordenadores={};
-  data.forEach(v=>{
-    const mes=(v['Data da Visita']||'').substring(0,7);if(mes)porMes[mes]=(porMes[mes]||0)+1;
-    const t=v['Tipo de Visita']||'Outros';porTipo[t]=(porTipo[t]||0)+1;
-    const c=v['Coordenador']||'Outros';
-    if(!coordenadores[c])coordenadores[c]={total:0,comContato:0,checkmobOk:0};
-    coordenadores[c].total++;
-    if(v['Houve Contato com Cliente?']==='Sim')coordenadores[c].comContato++;
-    if(v['Registro no CheckMob?']==='Sim')coordenadores[c].checkmobOk++;
-  });
-  return{
-    total:data.length,
-    comContato:data.filter(v=>v['Houve Contato com Cliente?']==='Sim').length,
-    semContato:data.filter(v=>v['Houve Contato com Cliente?']==='Não').length,
-    checkmobOk:data.filter(v=>v['Registro no CheckMob?']==='Sim').length,
-    comPendencias:data.filter(v=>v['Itens Pendentes']&&v['Itens Pendentes'].trim()).length,
-    atingiuTotal:data.filter(v=>v['Visita Atingiu Objetivos?']==='Totalmente').length,
-    atingiuParcial:data.filter(v=>v['Visita Atingiu Objetivos?']==='Parcialmente').length,
-    altaPrioridade:data.filter(v=>v['Prioridade Pendências']==='Alta').length,
-    porMes,porTipo,coordenadores,visitas:data
-  };
-}
-
-function renderAll(kpis,data){
   document.getElementById('kpi-grid').innerHTML=`
-    <div class="kpi"><div class="n">${kpis.total}</div><div class="l">Total Visitas</div></div>
-    <div class="kpi g"><div class="n">${kpis.comContato}</div><div class="l">Com Contato</div></div>
-    <div class="kpi r"><div class="n">${kpis.semContato}</div><div class="l">Sem Contato</div></div>
-    <div class="kpi g"><div class="n">${kpis.checkmobOk}</div><div class="l">CheckMob OK</div></div>
-    <div class="kpi y"><div class="n">${kpis.comPendencias}</div><div class="l">Com Pendências</div></div>
-    <div class="kpi r"><div class="n">${kpis.altaPrioridade}</div><div class="l">Prioridade Alta</div></div>
-    <div class="kpi g"><div class="n">${kpis.atingiuTotal}</div><div class="l">Obj. Totais</div></div>
-    <div class="kpi y"><div class="n">${kpis.atingiuParcial}</div><div class="l">Obj. Parciais</div></div>`;
+    <div class="kpi"><div class="n">${t}</div><div class="l">Total Visitas</div></div>
+    <div class="kpi g"><div class="n">${cc}</div><div class="l">Com Contato</div></div>
+    <div class="kpi r"><div class="n">${sc}</div><div class="l">Sem Contato</div></div>
+    <div class="kpi g"><div class="n">${ck}</div><div class="l">CheckMob OK</div></div>
+    <div class="kpi y"><div class="n">${cp}</div><div class="l">Com Pendências</div></div>
+    <div class="kpi r"><div class="n">${al}</div><div class="l">Prioridade Alta</div></div>
+    <div class="kpi g"><div class="n">${ot}</div><div class="l">Obj. Totais</div></div>
+    <div class="kpi y"><div class="n">${op}</div><div class="l">Obj. Parciais</div></div>`;
 
+  // Gráficos
   const az='#1F4E79',az2='#2E75B6',vd='#276221',vm='#9C0006',am='#d69e2e';
-  const meses=Object.keys(kpis.porMes||{}).sort();
-  mkChart('ch-mes','bar',meses,meses.map(m=>kpis.porMes[m]),'Visitas',[az2]);
-  const tipos=Object.keys(kpis.porTipo||{});
-  mkChart('ch-tipo','doughnut',tipos,tipos.map(t=>kpis.porTipo[t]),'Visitas',[az,az2,'#5BA3D9',vd,am,vm]);
+  const pm={},pt={};
+  data.forEach(v=>{
+    const m=(v['Data da Visita']||'').substring(0,7); if(m) pm[m]=(pm[m]||0)+1;
+    const t=v['Tipo de Visita']||'Outros'; pt[t]=(pt[t]||0)+1;
+  });
+  mkChart('ch-mes','bar',Object.keys(pm).sort(),Object.keys(pm).sort().map(m=>pm[m]),'Visitas',[az2]);
+  mkChart('ch-tipo','doughnut',Object.keys(pt),Object.values(pt),'Visitas',[az,az2,'#5BA3D9',vd,am,vm]);
   mkChart('ch-chk','doughnut',['Sim','Não','Parcial'],
     [data.filter(v=>v['Registro no CheckMob?']==='Sim').length,
      data.filter(v=>v['Registro no CheckMob?']==='Não').length,
@@ -245,16 +694,25 @@ function renderAll(kpis,data){
      data.filter(v=>v['Visita Atingiu Objetivos?']==='Parcialmente').length,
      data.filter(v=>v['Visita Atingiu Objetivos?']==='Não').length],'Visitas',[vd,am,vm]);
 
+  // Coordenadores
+  const coords={};
+  data.forEach(v=>{
+    const c=v['Coordenador']||'Outros';
+    if(!coords[c]) coords[c]={t:0,cc:0,ck:0};
+    coords[c].t++;
+    if(v['Houve Contato com Cliente?']==='Sim') coords[c].cc++;
+    if(v['Registro no CheckMob?']==='Sim') coords[c].ck++;
+  });
   const cg=document.getElementById('coord-grid');
-  const coords=kpis.coordenadores||{};
-  cg.innerHTML=Object.keys(coords).length?Object.entries(coords).map(([n,s])=>`
+  cg.innerHTML=Object.keys(coords).length ? Object.entries(coords).map(([n,s])=>`
     <div class="coord-card"><h4>👤 ${n}</h4>
-      <div class="cs"><span>Total</span><span>${s.total}</span></div>
-      <div class="cs"><span>Com contato</span><span>${s.comContato}</span></div>
-      <div class="cs"><span>CheckMob OK</span><span>${s.checkmobOk}</span></div>
-      <div class="cs"><span>Conformidade</span><span>${s.total?Math.round(s.checkmobOk/s.total*100):0}%</span></div>
-    </div>`).join(''):'<p style="color:#aaa;font-size:.88rem">Nenhum dado.</p>';
+      <div class="cs"><span>Total</span><span>${s.t}</span></div>
+      <div class="cs"><span>Com contato</span><span>${s.cc}</span></div>
+      <div class="cs"><span>CheckMob OK</span><span>${s.ck}</span></div>
+      <div class="cs"><span>Conformidade</span><span>${s.t?Math.round(s.ck/s.t*100):0}%</span></div>
+    </div>`).join('') : '<p style="color:#aaa;font-size:.86rem">Nenhum dado.</p>';
 
+  // Tabela
   const tbody=document.getElementById('tbody');
   const empty=document.getElementById('empty');
   document.getElementById('cnt').textContent=data.length?`(${data.length} registro${data.length!==1?'s':''})`:'' ;
@@ -273,17 +731,17 @@ function renderAll(kpis,data){
       <td>${v['Empresa']||''}</td>
       <td>${v['Coordenador']||''}</td>
       <td>${v['Cliente / Evento']||''}</td>
-      <td style="font-size:.78rem">${v['Tipo de Visita']||''}</td>
+      <td style="font-size:.76rem">${v['Tipo de Visita']||''}</td>
       <td><span class="badge ${bcm}">${cm||'—'}</span></td>
       <td><span class="badge ${bp}">${pend}</span></td>
       <td><span class="badge ${bo}">${obj||'—'}</span></td>
-      <td><button class="btn btn-primary" style="padding:5px 12px;font-size:.78rem" onclick="openRel('${v['ID']}')">🖨️ Ver</button></td>
+      <td><button class="btn btn-primary" style="padding:4px 10px;font-size:.76rem;border-radius:6px" onclick='openRel(${JSON.stringify(v)})'>🖨️</button></td>
     </tr>`;
   }).join('');
 }
 
 function mkChart(id,type,labels,data,label,colors){
-  if(charts[id])charts[id].destroy();
+  if(charts[id]) charts[id].destroy();
   charts[id]=new Chart(document.getElementById(id).getContext('2d'),{
     type,data:{labels,datasets:[{label,data,backgroundColor:colors,borderWidth:type==='bar'?0:2,borderColor:'#fff'}]},
     options:{responsive:true,maintainAspectRatio:true,
@@ -292,58 +750,40 @@ function mkChart(id,type,labels,data,label,colors){
   });
 }
 
-async function exportExcel(){
-  try{
-    const res=await fetch('/api/visitas');
-    const data=await res.json();
-    if(!data.length){alert('Nenhum dado para exportar.');return;}
-    // Exporta via CSV simples
-    const headers=Object.keys(data[0]);
-    const rows=[headers,...data.map(r=>headers.map(h=>`"${(r[h]||'').toString().replace(/"/g,'""')}"`))] ;
-    const csv=rows.map(r=>r.join(',')).join('\n');
-    const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');a.href=url;
-    a.download='Fibravit-Visitas-'+new Date().toISOString().split('T')[0]+'.csv';
-    a.click();URL.revokeObjectURL(url);
-  }catch(e){alert('Erro ao exportar.');}
+// ══════════════════════════════════════════════════════════════
+// RELATÓRIO DE IMPRESSÃO
+// ══════════════════════════════════════════════════════════════
+function openRel(v) {
+  document.getElementById('modal-body').innerHTML = buildRel(v);
+  document.getElementById('modal').classList.add('open');
 }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-async function openRel(id){
-  try{
-    const res=await fetch(`/api/visita/${id}`);
-    const v=await res.json();
-    document.getElementById('modal-body').innerHTML=buildRel(v);
-    document.getElementById('modal').classList.add('open');
-  }catch(e){alert('Erro ao carregar relatório.');}
-}
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-
-function bv(val){
-  if(!val)return'<span style="color:#aaa">—</span>';
+function bv(val) {
+  if(!val) return '<span style="color:#aaa">—</span>';
   const cls=['Sim','Totalmente','Ótimo','Bom'].includes(val)?'ok':val==='Não'?'no':'pa';
   return`<span class="${cls}">${val}</span>`;
 }
 
-function buildRel(v){
+function buildRel(v) {
   const dt=new Date().toLocaleDateString('pt-BR');
   const hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   return`
-  <div style="border-bottom:3px solid #1F4E79;padding-bottom:14px;margin-bottom:16px">
+  <div style="border-bottom:3px solid #1F4E79;padding-bottom:12px;margin-bottom:14px">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
       <div>
-        <div style="font-size:1.25rem;font-weight:800;color:#1F4E79">GRUPO FIBRAVIT</div>
-        <div style="font-size:.82rem;color:#595959;margin-top:2px">Relatório de Visita Operacional</div>
+        <div style="font-size:1.2rem;font-weight:800;color:#1F4E79">GRUPO FIBRAVIT</div>
+        <div style="font-size:.8rem;color:#595959;margin-top:2px">Relatório de Visita Operacional</div>
       </div>
-      <div style="text-align:right;font-size:.78rem;color:#595959;line-height:1.6">
-        <div>ID: <strong style="color:#1F4E79;font-size:1.05rem">${v['ID']}</strong></div>
+      <div style="text-align:right;font-size:.76rem;color:#595959;line-height:1.6">
+        <div>ID: <strong style="color:#1F4E79;font-size:1rem">${v['ID']||'—'}</strong></div>
         <div>Emitido: ${dt} às ${hora}</div>
         <div>Empresa: <strong>${v['Empresa']||'—'}</strong></div>
       </div>
     </div>
   </div>
   <div class="rel-sec"><div class="rel-bar">1. Identificação da Visita</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 18px">
       <div class="rel-row"><span class="rel-lbl">Data:</span><span class="rel-val">${v['Data da Visita']||'—'}</span></div>
       <div class="rel-row"><span class="rel-lbl">Horário:</span><span class="rel-val">${v['Horário']||'—'}</span></div>
       <div class="rel-row"><span class="rel-lbl">Empresa:</span><span class="rel-val">${v['Empresa']||'—'}</span></div>
@@ -370,36 +810,34 @@ function buildRel(v){
     <div class="rel-row"><span class="rel-lbl">Materiais:</span><span class="rel-val">${v['Materiais Entregues']||'Nenhum'}</span></div>
     <div class="rel-row"><span class="rel-lbl">Recibo / NF:</span><span class="rel-val">${v['Recibo / NF']||'—'}</span></div>
   </div>
-  <div class="rel-sec"><div class="rel-bar">5. Pendências e Pontos de Atenção</div>
+  <div class="rel-sec"><div class="rel-bar">5. Pendências</div>
     <div class="rel-row"><span class="rel-lbl">Itens pendentes:</span><span class="rel-val" style="white-space:pre-line">${v['Itens Pendentes']||'Nenhum'}</span></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px 20px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px 18px">
       <div class="rel-row"><span class="rel-lbl">Prioridade:</span><span class="rel-val">${v['Prioridade Pendências']||'—'}</span></div>
       <div class="rel-row"><span class="rel-lbl">Responsável:</span><span class="rel-val">${v['Responsável Pendência']||'—'}</span></div>
       <div class="rel-row"><span class="rel-lbl">Prazo:</span><span class="rel-val">${v['Prazo Pendência']||'—'}</span></div>
     </div>
   </div>
   <div class="rel-sec"><div class="rel-bar">6. Avaliação do Coordenador</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 18px">
       <div class="rel-row"><span class="rel-lbl">Objetivos atingidos:</span><span class="rel-val">${bv(v['Visita Atingiu Objetivos?'])}</span></div>
       <div class="rel-row"><span class="rel-lbl">Satisfação do cliente:</span><span class="rel-val">${v['Satisfação do Cliente']||'—'}</span></div>
     </div>
     <div class="rel-row"><span class="rel-lbl">Observações:</span><span class="rel-val" style="white-space:pre-line">${v['Observações Gerais']||'—'}</span></div>
   </div>
-  <div style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:50px">
-    <div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.8rem;color:#444">
+  <div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:50px">
+    <div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.78rem;color:#444">
       <strong>${v['Coordenador']||'Coordenador'}</strong><br/>Assinatura
     </div>
-    <div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.8rem;color:#444">
+    <div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.78rem;color:#444">
       Representante do Cliente<br/>Assinatura
     </div>
   </div>
-  <div style="margin-top:18px;padding-top:10px;border-top:1px solid #D0D8E4;display:flex;justify-content:space-between;font-size:.7rem;color:#aaa">
+  <div style="margin-top:16px;padding-top:8px;border-top:1px solid #D0D8E4;display:flex;justify-content:space-between;font-size:.68rem;color:#aaa">
     <span>Grupo Fibravit — Uso Interno — Versão 1.0</span>
     <span>Data de envio: ${v['Data de Envio']||'—'}</span>
   </div>`;
 }
-
-loadData();
 </script>
 </body>
 </html>

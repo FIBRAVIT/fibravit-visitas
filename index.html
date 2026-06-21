@@ -763,21 +763,27 @@ function renderDash(data) {
     var bcm=cm==='Sim'?'b-sim':cm==='Não'?'b-nao':'b-par';
     var bp=pend==='Não'?'b-sim':pend==='Alta'?'b-alta':pend==='Média'?'b-media':'b-baixa';
     var bo=obj==='Totalmente'?'b-sim':obj==='Não'?'b-nao':'b-par';
-    return '<tr><td><strong>'+( v['ID']||'')+'</strong></td><td>'+(v['Data da Visita']||'')+'</td><td>'+(v['Empresa']||'')+'</td><td>'+(v['Coordenador']||'')+'</td><td>'+(v['Cliente / Evento']||'')+'</td><td style="font-size:.76rem">'+(v['Tipo de Visita']||'')+'</td><td><span class="badge '+bcm+'">'+(cm||'—')+'</span></td><td><span class="badge '+bp+'">'+pend+'</span></td><td><span class="badge '+bo+'">'+(obj||'—')+'</span></td><td><button class="btn btn-primary" style="padding:4px 10px;font-size:.76rem;border-radius:6px;width:auto" data-id="'+(v['ID']||'')+'">🖨️</button></td></tr>';
+    var vJson = JSON.stringify(v).replace(/'/g,"&#39;");
+    return '<tr><td><strong>'+( v['ID']||'')+'</strong></td><td>'+(v['Data da Visita']||'')+'</td><td>'+(v['Empresa']||'')+'</td><td>'+(v['Coordenador']||'')+'</td><td>'+(v['Cliente / Evento']||'')+'</td><td style="font-size:.76rem">'+(v['Tipo de Visita']||'')+'</td><td><span class="badge '+bcm+'">'+(cm||'—')+'</span></td><td><span class="badge '+bp+'">'+pend+'</span></td><td><span class="badge '+bo+'">'+(obj||'—')+'</span></td><td><button class="btn btn-primary" style="padding:4px 10px;font-size:.76rem;border-radius:6px;width:auto;touch-action:manipulation" onclick="openRelById(this)">🖨️</button></td></tr>';
   }).join('');
-  // Adicionar eventos nos botões de relatório
-  tbody.querySelectorAll('button[data-id]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var id = this.getAttribute('data-id');
-      var visita = allData.find(function(v){return v['ID']===id;});
-      if(visita) openRel(visita);
-    });
-  });
+  // Botões de relatório usam openRelById via onclick
 }
 
 function mkChart(id,type,labels,data,label,colors){
   if(charts[id])charts[id].destroy();
   charts[id]=new Chart(document.getElementById(id).getContext('2d'),{type:type,data:{labels:labels,datasets:[{label:label,data:data,backgroundColor:colors,borderWidth:type==='bar'?0:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:type==='bar'?'none':'bottom',labels:{font:{size:10}}}},scales:type==='bar'?{y:{beginAtZero:true,ticks:{stepSize:1}}}:{}}});
+}
+
+function openRelById(btn) {
+  // Pega o índice da linha e busca nos dados
+  var row = btn.closest('tr');
+  var id = row.cells[0].textContent.trim();
+  var visita = null;
+  for(var i=0;i<allData.length;i++) {
+    if(String(allData[i]['ID'])===String(id)) { visita=allData[i]; break; }
+  }
+  if(visita) openRel(visita);
+  else alert('Visita não encontrada. Atualize o dashboard.');
 }
 
 function openRel(v) {

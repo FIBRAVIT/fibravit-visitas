@@ -162,7 +162,7 @@ tr:hover td{background:var(--azul-bg)}
 ══════════════════════════════════════════════════════ -->
 <div class="page active" id="page-form">
 <!-- Banner configuração API -->
-<div class="api-banner" id="api-banner">
+<div class="api-banner" id="api-banner" style="display:none!important">
 <strong>⚙️ Configure o link do Google Sheets (só uma vez)</strong>
     Cole aqui o link do Web App gerado no Google Apps Script:
     <input class="api-input" id="api-url-input" placeholder="https://script.google.com/macros/s/SEU_ID/exec"/>
@@ -466,7 +466,7 @@ tr:hover td{background:var(--azul-bg)}
 // ══════════════════════════════════════════════════════════════
 // CONFIGURAÇÃO
 // ══════════════════════════════════════════════════════════════
-let API_URL = localStorage.getItem('fibravit_api_url') || 'https://script.google.com/macros/s/AKfycbyO4C24JK80Z7EwEiTBP_ZqZrmfWRrnZZp31oZJ65cDbZvxvk93pq60Hw7L0vqUpYFy/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyO4C24JK80Z7EwEiTBP_ZqZrmfWRrnZZp31oZJ65cDbZvxvk93pq60Hw7L0vqUpYFy/exec';
 let allData = [];
 let charts  = {};
 const pills = {};
@@ -479,12 +479,12 @@ function salvarApi() {
   }
   API_URL = url;
   localStorage.setItem('fibravit_api_url', url);
-  document.getElementById('api-banner').style.display = 'none';
+  // API configurada
   alert('✅ Link salvo! Agora você pode usar o sistema.');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('api-banner').style.display = 'none'; // Link já configurado
+  // API configurada // Link já configurado
   else document.getElementById('api-url-input').value = API_URL;
   const now = new Date();
   const pad = n => String(n).padStart(2,'0');

@@ -775,15 +775,34 @@ function mkChart(id,type,labels,data,label,colors){
 }
 
 function openRelById(btn) {
-  // Pega o índice da linha e busca nos dados
   var row = btn.closest('tr');
   var id = row.cells[0].textContent.trim();
+  // Tenta primeiro no allData (já carregado)
   var visita = null;
   for(var i=0;i<allData.length;i++) {
     if(String(allData[i]['ID'])===String(id)) { visita=allData[i]; break; }
   }
-  if(visita) openRel(visita);
-  else alert('Visita não encontrada. Atualize o dashboard.');
+  if(visita) {
+    openRel(visita);
+    return;
+  }
+  // Se não encontrou, busca direto da API
+  btn.textContent = '⏳';
+  fetch(API_URL + '?action=get')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      allData = data.visitas || [];
+      btn.textContent = '🖨️';
+      for(var i=0;i<allData.length;i++) {
+        if(String(allData[i]['ID'])===String(id)) { visita=allData[i]; break; }
+      }
+      if(visita) openRel(visita);
+      else alert('Visita ID '+id+' não encontrada.');
+    })
+    .catch(function(e) {
+      btn.textContent = '🖨️';
+      alert('Erro ao buscar dados. Verifique sua conexão.');
+    });
 }
 
 function openRel(v) {

@@ -72,7 +72,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#222;m
 .chk-item.on .chk-box{background:var(--azul);border-color:var(--azul);color:#fff}
 .chk-item span{font-size:.86rem}
 .btn{padding:12px 20px;border:none;border-radius:9px;font-size:.93rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
-.btn:active{transform:scale(.97)}
+.btn:active{transform:scale(.97)} .btn{-webkit-tap-highlight-color:rgba(0,0,0,0.1);touch-action:manipulation;}
 .btn-primary{background:var(--azul);color:#fff;box-shadow:0 3px 10px rgba(31,78,121,.25)}
 .btn-success{background:#1a7a3c;color:#fff}
 .btn-outline{background:#e8edf2;color:var(--azul)}
@@ -213,7 +213,7 @@ tr:hover td{background:var(--azul-bg)}
 <textarea id="f-objetivo" placeholder="Descreva o motivo e o que deveria ser feito..."></textarea>
 </div>
 </div>
-<div class="nav-btns"><button class="btn btn-primary" onclick="nextStep(0)">Próximo ›</button></div>
+<div class="nav-btns"><button class="btn btn-primary" onclick="nextStep(0)" ontouchstart="">Próximo ›</button></div>
 </div>
 <!-- STEP 2 -->
 <div class="step" id="s1">

@@ -3,44 +3,25 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport"/>
-<title>Grupo Fibravit — Sistema de Visitas</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Grupo Fibravit — Visitas</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root{
-  --azul:#1F4E79;--azul2:#2E75B6;--azul-bg:#EBF2FA;
-  --verde:#276221;--verde-bg:#C6EFCE;
-  --verm:#9C0006;--verm-bg:#FFC7CE;
-  --amar:#7B5E00;--amar-bg:#FFEB9C;
-  --cinza:#595959;--borda:#D0D8E4;
-  --r:12px;--sh:0 2px 14px rgba(31,78,121,.10);
-}
+:root{--azul:#1F4E79;--azul2:#2E75B6;--azul-bg:#EBF2FA;--verde:#276221;--verde-bg:#C6EFCE;--verm:#9C0006;--verm-bg:#FFC7CE;--amar:#7B5E00;--amar-bg:#FFEB9C;--cinza:#595959;--borda:#D0D8E4;--r:12px;--sh:0 2px 14px rgba(31,78,121,.10)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#222;min-height:100vh}
-
-/* ── TOPBAR ── */
 .topbar{background:var(--azul);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2);position:sticky;top:0;z-index:200}
 .topbar h1{font-size:1rem;font-weight:800}
 .nav-tabs{display:flex;gap:6px}
-.nav-tab{padding:7px 13px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.8);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s}
-.nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.6)}
-
-/* ── PÁGINAS ── */
+.nav-tab{padding:7px 13px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.8);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s;touch-action:manipulation}
+.nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.2);color:#fff}
 .page{display:none;padding:16px;max-width:860px;margin:0 auto}
 .page.active{display:block}
-
-/* ── AVISO API ── */
-.api-banner{background:var(--amar-bg);border:1.5px solid #d69e2e;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:.85rem;color:var(--amar)}
-.api-banner strong{display:block;margin-bottom:4px;font-size:.9rem}
-.api-input{width:100%;padding:9px 12px;border:1.5px solid #d69e2e;border-radius:8px;font-size:.85rem;margin-top:8px;background:#fff}
-.btn-salvar-api{margin-top:8px;padding:9px 20px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.85rem;cursor:pointer}
-
-/* ── FORM ── */
-.prog-wrap{height:5px;background:rgba(255,255,255,.2);position:sticky;top:52px;z-index:199}
+.prog-wrap{height:5px;background:rgba(255,255,255,.15);position:sticky;top:52px;z-index:199}
 .prog-fill{height:100%;background:#5BC8F5;transition:width .4s}
 .step-nav{display:flex;overflow-x:auto;gap:6px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--borda);scrollbar-width:none}
 .step-nav::-webkit-scrollbar{display:none}
-.step-btn{flex-shrink:0;padding:5px 12px;border-radius:16px;border:1.5px solid var(--borda);background:#fff;color:var(--cinza);font-size:.73rem;font-weight:700;cursor:pointer}
+.step-btn{flex-shrink:0;padding:5px 12px;border-radius:16px;border:1.5px solid var(--borda);background:#fff;color:var(--cinza);font-size:.73rem;font-weight:700;cursor:pointer;touch-action:manipulation}
 .step-btn.active{background:var(--azul);color:#fff;border-color:var(--azul)}
 .step-btn.done{background:var(--verde-bg);color:var(--verde);border-color:var(--verde)}
 .step{display:none}.step.active{display:block;animation:fi .3s ease}
@@ -50,14 +31,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#222;m
 .field{margin-bottom:13px}
 .field label{display:block;font-size:.78rem;font-weight:700;color:var(--azul);margin-bottom:4px}
 .req{color:#e53e3e}
-.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:.92rem;background:#fafbfc;transition:border-color .2s}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:.92rem;background:#fafbfc;-webkit-appearance:none;appearance:none}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--azul2);background:#fff}
 .field textarea{min-height:80px;resize:vertical}
-.field select{-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231F4E79' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231F4E79' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:480px){.row2{grid-template-columns:1fr}}
 .pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
-.pill{padding:8px 15px;border:1.5px solid var(--borda);border-radius:20px;cursor:pointer;font-size:.83rem;font-weight:600;color:#555;background:#fafbfc;transition:all .2s;user-select:none}
+.pill{padding:9px 16px;border:1.5px solid var(--borda);border-radius:20px;cursor:pointer;font-size:.83rem;font-weight:600;color:#555;background:#fafbfc;transition:all .2s;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .pill.p-sim{border-color:var(--verde);background:var(--verde-bg);color:var(--verde)}
 .pill.p-nao{border-color:var(--verm);background:var(--verm-bg);color:var(--verm)}
 .pill.p-par{border-color:#d69e2e;background:var(--amar-bg);color:var(--amar)}
@@ -66,26 +47,22 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#222;m
 .pill.p-media{border-color:#d69e2e;background:var(--amar-bg);color:var(--amar)}
 .pill.p-baixa{border-color:var(--verde);background:var(--verde-bg);color:var(--verde)}
 .chk-list{display:flex;flex-direction:column;gap:6px}
-.chk-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--borda);border-radius:8px;cursor:pointer;background:#fafbfc;transition:all .2s}
+.chk-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--borda);border-radius:8px;cursor:pointer;background:#fafbfc;transition:all .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .chk-item.on{border-color:var(--azul);background:var(--azul-bg)}
 .chk-box{width:20px;height:20px;border:2px solid var(--borda);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;transition:all .2s}
 .chk-item.on .chk-box{background:var(--azul);border-color:var(--azul);color:#fff}
 .chk-item span{font-size:.86rem}
-.btn{padding:12px 20px;border:none;border-radius:9px;font-size:.93rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--azul);color:#fff;box-shadow:0 3px 10px rgba(31,78,121,.25)}
+.btn{padding:13px 20px;border:none;border-radius:9px;font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;justify-content:center;gap:6px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;width:100%}
+.btn-primary{background:var(--azul);color:#fff}
 .btn-success{background:#1a7a3c;color:#fff}
 .btn-outline{background:#e8edf2;color:var(--azul)}
 .nav-btns{display:flex;gap:10px;margin-top:4px;margin-bottom:18px}
-.nav-btns .btn{flex:1;justify-content:center}
 .mat-item{border:1.5px solid var(--borda);border-radius:9px;padding:12px;margin-bottom:10px;position:relative}
-.mat-del{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--verm);font-size:1rem;cursor:pointer}
+.mat-del{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--verm);font-size:1rem;cursor:pointer;touch-action:manipulation}
 #success{display:none;text-align:center;padding:40px 20px}
 #success .big{font-size:4rem;margin-bottom:12px}
 #success h2{color:var(--verde);font-size:1.4rem;margin-bottom:8px}
 .id-badge{display:inline-block;background:var(--azul-bg);color:var(--azul);font-size:1.5rem;font-weight:800;padding:10px 28px;border-radius:10px;margin:12px 0 20px}
-
-/* ── DASHBOARD ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
 .kpi{background:#fff;border-radius:var(--r);padding:15px;box-shadow:var(--sh);text-align:center;border-top:4px solid var(--azul)}
 .kpi.g{border-top-color:#276221}.kpi.r{border-top-color:#9C0006}.kpi.y{border-top-color:#d69e2e}
@@ -106,30 +83,24 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#222;m
 .filters{background:#fff;border-radius:var(--r);padding:13px 15px;box-shadow:var(--sh);margin-bottom:16px;display:flex;flex-wrap:wrap;gap:9px;align-items:flex-end}
 .fg{display:flex;flex-direction:column;gap:3px}
 .fg label{font-size:.73rem;font-weight:700;color:var(--azul)}
-.fg select,.fg input{padding:7px 10px;border:1.5px solid var(--borda);border-radius:7px;font-size:.82rem;min-width:110px}
-.btn-sm{padding:7px 16px;font-size:.8rem;border-radius:7px}
+.fg select,.fg input{padding:7px 10px;border:1.5px solid var(--borda);border-radius:7px;font-size:.82rem;min-width:110px;-webkit-appearance:none;appearance:none}
+.btn-sm{padding:8px 16px;font-size:.8rem;border-radius:7px;width:auto}
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:.8rem}
 th{background:var(--azul);color:#fff;padding:8px 10px;text-align:left;white-space:nowrap}
 td{padding:7px 10px;border-bottom:1px solid var(--borda);vertical-align:middle}
 tr:hover td{background:var(--azul-bg)}
 .badge{display:inline-block;padding:2px 8px;border-radius:14px;font-size:.71rem;font-weight:700}
-.b-sim{background:var(--verde-bg);color:var(--verde)}
-.b-nao{background:var(--verm-bg);color:var(--verm)}
-.b-par{background:var(--amar-bg);color:var(--amar)}
-.b-alta{background:var(--verm-bg);color:var(--verm)}
-.b-media{background:var(--amar-bg);color:var(--amar)}
-.b-baixa{background:var(--verde-bg);color:var(--verde)}
+.b-sim{background:var(--verde-bg);color:var(--verde)}.b-nao{background:var(--verm-bg);color:var(--verm)}.b-par{background:var(--amar-bg);color:var(--amar)}
+.b-alta{background:var(--verm-bg);color:var(--verm)}.b-media{background:var(--amar-bg);color:var(--amar)}.b-baixa{background:var(--verde-bg);color:var(--verde)}
 .card-title{font-size:.95rem;font-weight:800;color:var(--azul);margin-bottom:12px}
 .empty{text-align:center;padding:28px;color:#aaa;font-size:.88rem}
-
-/* ── MODAL RELATÓRIO ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center}
 .overlay.open{display:flex}
 .modal{background:#fff;border-radius:var(--r);width:93%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.25)}
 .modal-hdr{background:var(--azul);color:#fff;padding:13px 17px;display:flex;justify-content:space-between;align-items:center;border-radius:var(--r) var(--r) 0 0;position:sticky;top:0}
 .modal-hdr h2{font-size:.92rem}
-.modal-close{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer}
+.modal-close{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;touch-action:manipulation}
 .modal-body{padding:18px}
 .modal-foot{padding:11px 17px;border-top:1px solid var(--borda);display:flex;gap:8px;justify-content:flex-end}
 .rel-sec{margin-bottom:14px}
@@ -138,9 +109,8 @@ tr:hover td{background:var(--azul-bg)}
 .rel-lbl{font-weight:700;color:var(--azul);min-width:160px;flex-shrink:0}
 .rel-val{color:#333}
 .ok{color:var(--verde);font-weight:700}.no{color:var(--verm);font-weight:700}.pa{color:var(--amar);font-weight:700}
-
 @media print{
-  .topbar,.prog-wrap,.step-nav,.nav-btns,.filters,.kpi-grid,.chart-grid,.coord-grid,.tbl-wrap,.modal-hdr,.modal-foot,.api-banner,.nav-tabs{display:none!important}
+  .topbar,.prog-wrap,.step-nav,.nav-btns,.filters,.kpi-grid,.chart-grid,.coord-grid,.tbl-wrap,.modal-hdr,.modal-foot,.nav-tabs{display:none!important}
   .overlay{position:static!important;background:none!important;display:block!important}
   .modal{width:100%!important;max-height:none!important;box-shadow:none!important}
   body{background:#fff!important}
@@ -152,43 +122,43 @@ tr:hover td{background:var(--azul-bg)}
 <div class="topbar">
 <h1>📋 Grupo Fibravit — Visitas</h1>
 <div class="nav-tabs">
-<button class="nav-tab active" onclick="showPage('form')">📝 Formulário</button>
-<button class="nav-tab" onclick="showPage('dash')">📊 Dashboard</button>
+<button class="nav-tab active" id="tab-form" onclick="showPage('form')">📝 Formulário</button>
+<button class="nav-tab" id="tab-dash" onclick="showPage('dash')">📊 Dashboard</button>
 </div>
 </div>
 <div class="prog-wrap" id="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
-<!-- ══════════════════════════════════════════════════════
-     FORMULÁRIO
-══════════════════════════════════════════════════════ -->
+<!-- FORMULÁRIO -->
 <div class="page active" id="page-form">
-<!-- Banner configuração API -->
-<div class="api-banner" id="api-banner" style="display:none!important">
-<strong>⚙️ Configure o link do Google Sheets (só uma vez)</strong>
-    Cole aqui o link do Web App gerado no Google Apps Script:
-    <input class="api-input" id="api-url-input" placeholder="https://script.google.com/macros/s/SEU_ID/exec"/>
-<button class="btn-salvar-api" onclick="salvarApi()">✅ Salvar e começar</button>
-</div>
 <div class="step-nav" id="step-nav">
-<button class="step-btn active" onclick="goStep(0)">1. Identificação</button>
-<button class="step-btn" onclick="goStep(1)">2. Contatos</button>
-<button class="step-btn" onclick="goStep(2)">3. Serviços</button>
-<button class="step-btn" onclick="goStep(3)">4. Materiais</button>
-<button class="step-btn" onclick="goStep(4)">5. Pendências</button>
-<button class="step-btn" onclick="goStep(5)">6. Avaliação</button>
+<button class="step-btn active" id="sbtn0">1. Identificação</button>
+<button class="step-btn" id="sbtn1">2. Contatos</button>
+<button class="step-btn" id="sbtn2">3. Serviços</button>
+<button class="step-btn" id="sbtn3">4. Materiais</button>
+<button class="step-btn" id="sbtn4">5. Pendências</button>
+<button class="step-btn" id="sbtn5">6. Avaliação</button>
 </div>
 <div style="max-width:620px;margin:0 auto">
 <!-- STEP 1 -->
 <div class="step active" id="s0">
 <div class="card">
 <div class="sec-bar">📍 1. Identificação da Visita</div>
-<div class="field"><label>Empresa <span class="req">*</span></label>
-<select id="f-empresa"><option value="">Selecione...</option><option>Fibravit</option><option>Service</option></select>
+<div class="field">
+<label>Empresa <span class="req">*</span></label>
+<select id="f-empresa">
+<option value="">Selecione...</option>
+<option>Fibravit</option>
+<option>Service</option>
+</select>
 </div>
-<div class="field"><label>Coordenador <span class="req">*</span></label>
+<div class="field">
+<label>Coordenador <span class="req">*</span></label>
 <select id="f-coord">
 <option value="">Selecione...</option>
-<option>Davi Lobato</option><option>Jhully Prado</option>
-<option>Gabriel Daher Regio</option><option>José Afonso Altoé</option><option>Outro</option>
+<option>Davi Lobato</option>
+<option>Jhully Prado</option>
+<option>Gabriel Daher Regio</option>
+<option>José Afonso Altoé</option>
+<option>Outro</option>
 </select>
 </div>
 <div class="row2">
@@ -201,28 +171,37 @@ tr:hover td{background:var(--azul-bg)}
 <div class="field"><label>Local / Cidade <span class="req">*</span></label><input id="f-local" placeholder="Ex: João Neiva - ES" type="text"/></div>
 <div class="field"><label>Nº Contrato / OS</label><input id="f-os" placeholder="Opcional" type="text"/></div>
 </div>
-<div class="field"><label>Tipo de visita <span class="req">*</span></label>
+<div class="field">
+<label>Tipo de visita <span class="req">*</span></label>
 <select id="f-tipo">
 <option value="">Selecione...</option>
-<option>Manutenção</option><option>Abastecimento</option>
-<option>Manutenção + Abastecimento</option><option>Visita comercial / Relacionamento</option>
-<option>Evento / Feira</option><option>Inspeção geral</option><option>Outro</option>
+<option>Manutenção</option>
+<option>Abastecimento</option>
+<option>Manutenção + Abastecimento</option>
+<option>Visita comercial / Relacionamento</option>
+<option>Evento / Feira</option>
+<option>Inspeção geral</option>
+<option>Outro</option>
 </select>
 </div>
-<div class="field"><label>Objetivo da visita <span class="req">*</span></label>
+<div class="field">
+<label>Objetivo da visita <span class="req">*</span></label>
 <textarea id="f-objetivo" placeholder="Descreva o motivo e o que deveria ser feito..."></textarea>
 </div>
 </div>
-<div class="nav-btns"><button class="btn btn-primary" onclick="nextStep(0)">Próximo ›</button></div>
+<div class="nav-btns">
+<button class="btn btn-primary" id="btn-next-0">Próximo ›</button>
+</div>
 </div>
 <!-- STEP 2 -->
 <div class="step" id="s1">
 <div class="card">
 <div class="sec-bar">🤝 2. Contatos com o Cliente</div>
-<div class="field"><label>Houve contato com o cliente? <span class="req">*</span></label>
+<div class="field">
+<label>Houve contato com o cliente? <span class="req">*</span></label>
 <div class="pills" id="pg-contato">
-<div class="pill" onclick="setPill('contato','Sim',this,'p-sim')">✅ Sim</div>
-<div class="pill" onclick="setPill('contato','Não',this,'p-nao')">❌ Não</div>
+<div class="pill" id="pill-contato-sim">✅ Sim</div>
+<div class="pill" id="pill-contato-nao">❌ Não</div>
 </div>
 </div>
 <div class="field" id="fd-pessoas">
@@ -235,56 +214,62 @@ tr:hover td{background:var(--azul-bg)}
 <textarea id="f-motivo" placeholder="Ex: Feira ainda não havia aberto..."></textarea>
 </div>
 <hr style="border:none;border-top:1px solid var(--borda);margin:12px 0"/>
-<div class="field"><label>Próximo contato agendado?</label>
+<div class="field">
+<label>Próximo contato agendado?</label>
 <div class="pills" id="pg-prox">
-<div class="pill" onclick="setPill('proximo','Sim',this,'p-sim');document.getElementById('fd-prox').style.display='block'">Sim</div>
-<div class="pill" onclick="setPill('proximo','Não',this,'p-nao');document.getElementById('fd-prox').style.display='none'">Não</div>
+<div class="pill" id="pill-prox-sim">Sim</div>
+<div class="pill" id="pill-prox-nao">Não</div>
 </div>
 </div>
 <div class="field" id="fd-prox" style="display:none">
-<label>Data / hora</label><input id="f-prox-data" type="datetime-local"/>
+<label>Data / hora</label>
+<input id="f-prox-data" type="datetime-local"/>
 </div>
 </div>
 <div class="nav-btns">
-<button class="btn btn-outline" onclick="prevStep(1)">‹ Anterior</button>
-<button class="btn btn-primary" onclick="nextStep(1)">Próximo ›</button>
+<button class="btn btn-outline" id="btn-prev-1">‹ Anterior</button>
+<button class="btn btn-primary" id="btn-next-1">Próximo ›</button>
 </div>
 </div>
 <!-- STEP 3 -->
 <div class="step" id="s2">
 <div class="card">
 <div class="sec-bar">🔧 3. Serviços e Atividades</div>
-<div class="field"><label>Serviços executados</label>
+<div class="field">
+<label>Serviços executados</label>
 <div class="chk-list" id="chk-serv">
-<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Abastecimento de água"/><div class="chk-box">✓</div><span>💧 Abastecimento de água</span></div>
-<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Sucção / esgotamento"/><div class="chk-box">✓</div><span>🔄 Sucção / esgotamento</span></div>
-<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Manutenção"/><div class="chk-box">✓</div><span>🔩 Manutenção</span></div>
-<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Limpeza geral"/><div class="chk-box">✓</div><span>🧹 Limpeza geral</span></div>
-<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Entrega de materiais"/><div class="chk-box">✓</div><span>📦 Entrega de materiais</span></div>
-<div class="chk-item" onclick="toggleChk(this)"><input style="display:none" type="checkbox" value="Inspeção geral"/><div class="chk-box">✓</div><span>🔍 Inspeção geral</span></div>
+<div class="chk-item" id="chk0"><div class="chk-box">✓</div><span>💧 Abastecimento de água</span></div>
+<div class="chk-item" id="chk1"><div class="chk-box">✓</div><span>🔄 Sucção / esgotamento</span></div>
+<div class="chk-item" id="chk2"><div class="chk-box">✓</div><span>🔩 Manutenção</span></div>
+<div class="chk-item" id="chk3"><div class="chk-box">✓</div><span>🧹 Limpeza geral</span></div>
+<div class="chk-item" id="chk4"><div class="chk-box">✓</div><span>📦 Entrega de materiais</span></div>
+<div class="chk-item" id="chk5"><div class="chk-box">✓</div><span>🔍 Inspeção geral</span></div>
 </div>
 </div>
-<div class="field"><label>Descrição detalhada / manutenções</label>
+<div class="field">
+<label>Descrição detalhada / manutenções</label>
 <textarea id="f-desc" placeholder="Peças trocadas, procedimentos, tempo gasto..." style="min-height:100px"></textarea>
 </div>
-<div class="field"><label>Registro no CheckMob? <span class="req">*</span></label>
+<div class="field">
+<label>Registro no CheckMob? <span class="req">*</span></label>
 <div class="pills" id="pg-chk">
-<div class="pill" onclick="setPill('checkmob','Sim',this,'p-sim')">✅ Sim</div>
-<div class="pill" onclick="setPill('checkmob','Não',this,'p-nao')">❌ Não</div>
-<div class="pill" onclick="setPill('checkmob','Parcial',this,'p-par')">⚠️ Parcial</div>
+<div class="pill" id="pill-chk-sim">✅ Sim</div>
+<div class="pill" id="pill-chk-nao">❌ Não</div>
+<div class="pill" id="pill-chk-par">⚠️ Parcial</div>
 </div>
 </div>
-<div class="field"><label>Fotos / evidências? <span class="req">*</span></label>
+<div class="field">
+<label>Fotos / evidências? <span class="req">*</span></label>
 <div class="pills" id="pg-foto">
-<div class="pill" onclick="setPill('fotos','Sim',this,'p-sim')">✅ Sim</div>
-<div class="pill" onclick="setPill('fotos','Não',this,'p-nao')">❌ Não</div>
-<div class="pill" onclick="setPill('fotos','N/A',this,'p-par')">N/A</div>
+<div class="pill" id="pill-foto-sim">✅ Sim</div>
+<div class="pill" id="pill-foto-nao">❌ Não</div>
+<div class="pill" id="pill-foto-na">N/A</div>
 </div>
 </div>
 </div>
 <div class="nav-btns">
-<button class="btn btn-outline" onclick="prevStep(2)">‹ Anterior</button>
-<button class="btn btn-primary" onclick="nextStep(2)">Próximo ›</button>
+<button class="btn btn-outline" id="btn-prev-2">‹ Anterior</button>
+<button class="btn btn-primary" id="btn-next-2">Próximo ›</button>
 </div>
 </div>
 <!-- STEP 4 -->
@@ -300,39 +285,43 @@ tr:hover td{background:var(--azul-bg)}
 </div>
 </div>
 </div>
-<button onclick="addMat()" style="width:100%;padding:9px;border:2px dashed var(--azul2);border-radius:8px;background:var(--azul-bg);color:var(--azul);font-weight:700;font-size:.86rem;cursor:pointer;margin-bottom:12px" type="button">+ Adicionar material</button>
-<div class="field"><label>Recibo / NF emitida?</label>
+<button id="btn-add-mat" style="width:100%;padding:9px;border:2px dashed var(--azul2);border-radius:8px;background:var(--azul-bg);color:var(--azul);font-weight:700;font-size:.86rem;cursor:pointer;margin-bottom:12px;touch-action:manipulation" type="button">+ Adicionar material</button>
+<div class="field">
+<label>Recibo / NF emitida?</label>
 <div class="pills" id="pg-rec">
-<div class="pill" onclick="setPill('recibo','Sim',this,'p-sim')">✅ Sim</div>
-<div class="pill" onclick="setPill('recibo','Não',this,'p-nao')">❌ Não</div>
-<div class="pill" onclick="setPill('recibo','N/A',this,'p-par')">N/A</div>
+<div class="pill" id="pill-rec-sim">✅ Sim</div>
+<div class="pill" id="pill-rec-nao">❌ Não</div>
+<div class="pill" id="pill-rec-na">N/A</div>
 </div>
 </div>
 </div>
 <div class="nav-btns">
-<button class="btn btn-outline" onclick="prevStep(3)">‹ Anterior</button>
-<button class="btn btn-primary" onclick="nextStep(3)">Próximo ›</button>
+<button class="btn btn-outline" id="btn-prev-3">‹ Anterior</button>
+<button class="btn btn-primary" id="btn-next-3">Próximo ›</button>
 </div>
 </div>
 <!-- STEP 5 -->
 <div class="step" id="s4">
 <div class="card">
 <div class="sec-bar">⚠️ 5. Pendências</div>
-<div class="field"><label>Há itens pendentes?</label>
+<div class="field">
+<label>Há itens pendentes?</label>
 <div class="pills" id="pg-pend">
-<div class="pill" onclick="setPill('tem_pend','Sim',this,'p-nao');document.getElementById('pend-det').style.display='block'">⚠️ Sim</div>
-<div class="pill" onclick="setPill('tem_pend','Não',this,'p-sim');document.getElementById('pend-det').style.display='none'">✅ Não</div>
+<div class="pill" id="pill-pend-sim">⚠️ Sim</div>
+<div class="pill" id="pill-pend-nao">✅ Não</div>
 </div>
 </div>
 <div id="pend-det" style="display:none">
-<div class="field"><label>Descrição das pendências <span class="req">*</span></label>
+<div class="field">
+<label>Descrição das pendências</label>
 <textarea id="f-pend" placeholder="Descreva detalhadamente..." style="min-height:100px"></textarea>
 </div>
-<div class="field"><label>Prioridade</label>
+<div class="field">
+<label>Prioridade</label>
 <div class="pills" id="pg-prior">
-<div class="pill" onclick="setPill('prior','Alta',this,'p-alta')">🔴 Alta</div>
-<div class="pill" onclick="setPill('prior','Média',this,'p-media')">🟡 Média</div>
-<div class="pill" onclick="setPill('prior','Baixa',this,'p-baixa')">🟢 Baixa</div>
+<div class="pill" id="pill-prior-alta">🔴 Alta</div>
+<div class="pill" id="pill-prior-media">🟡 Média</div>
+<div class="pill" id="pill-prior-baixa">🟢 Baixa</div>
 </div>
 </div>
 <div class="row2">
@@ -342,31 +331,34 @@ tr:hover td{background:var(--azul-bg)}
 </div>
 </div>
 <div class="nav-btns">
-<button class="btn btn-outline" onclick="prevStep(4)">‹ Anterior</button>
-<button class="btn btn-primary" onclick="nextStep(4)">Próximo ›</button>
+<button class="btn btn-outline" id="btn-prev-4">‹ Anterior</button>
+<button class="btn btn-primary" id="btn-next-4">Próximo ›</button>
 </div>
 </div>
 <!-- STEP 6 -->
 <div class="step" id="s5">
 <div class="card">
 <div class="sec-bar">📊 6. Avaliação</div>
-<div class="field"><label>A visita atingiu seus objetivos? <span class="req">*</span></label>
+<div class="field">
+<label>A visita atingiu seus objetivos? <span class="req">*</span></label>
 <div class="pills" id="pg-obj">
-<div class="pill" onclick="setPill('obj','Totalmente',this,'p-sim')">✅ Totalmente</div>
-<div class="pill" onclick="setPill('obj','Parcialmente',this,'p-par')">⚠️ Parcialmente</div>
-<div class="pill" onclick="setPill('obj','Não',this,'p-nao')">❌ Não</div>
+<div class="pill" id="pill-obj-tot">✅ Totalmente</div>
+<div class="pill" id="pill-obj-par">⚠️ Parcialmente</div>
+<div class="pill" id="pill-obj-nao">❌ Não</div>
 </div>
 </div>
-<div class="field"><label>Satisfação do cliente</label>
+<div class="field">
+<label>Satisfação do cliente</label>
 <div class="pills" id="pg-sat">
-<div class="pill" onclick="setPill('sat','Ótimo',this,'p-sim')">😄 Ótimo</div>
-<div class="pill" onclick="setPill('sat','Bom',this,'p-sim')">🙂 Bom</div>
-<div class="pill" onclick="setPill('sat','Regular',this,'p-par')">😐 Regular</div>
-<div class="pill" onclick="setPill('sat','Ruim',this,'p-nao')">😞 Ruim</div>
-<div class="pill" onclick="setPill('sat','N/A',this,'p-sel')">N/A</div>
+<div class="pill" id="pill-sat-ot">😄 Ótimo</div>
+<div class="pill" id="pill-sat-bom">🙂 Bom</div>
+<div class="pill" id="pill-sat-reg">😐 Regular</div>
+<div class="pill" id="pill-sat-ruim">😞 Ruim</div>
+<div class="pill" id="pill-sat-na">N/A</div>
 </div>
 </div>
-<div class="field"><label>Observações gerais</label>
+<div class="field">
+<label>Observações gerais</label>
 <textarea id="f-obs" placeholder="Situações incomuns, oportunidades, feedbacks..." style="min-height:110px"></textarea>
 </div>
 <p style="font-size:.78rem;color:#888;background:var(--amar-bg);padding:9px 12px;border-radius:8px;margin-top:4px">
@@ -374,8 +366,8 @@ tr:hover td{background:var(--azul-bg)}
       </p>
 </div>
 <div class="nav-btns">
-<button class="btn btn-outline" onclick="prevStep(5)">‹ Anterior</button>
-<button class="btn btn-success" onclick="submitForm()" style="flex:2">✅ Enviar Relatório</button>
+<button class="btn btn-outline" id="btn-prev-5">‹ Anterior</button>
+<button class="btn btn-success" id="btn-submit">✅ Enviar Relatório</button>
 </div>
 </div>
 <!-- SUCCESS -->
@@ -385,20 +377,13 @@ tr:hover td{background:var(--azul-bg)}
 <p>Dados salvos no Google Sheets com sucesso.</p>
 <div class="id-badge">ID: <span id="suc-id">—</span></div>
 <p style="margin-bottom:22px;color:#777;font-size:.86rem">Guarde este ID para consultar no dashboard.</p>
-<button class="btn btn-primary" onclick="location.reload()">+ Nova Visita</button>
-<button class="btn btn-outline" onclick="showPage('dash')" style="margin-left:8px">📊 Dashboard</button>
+<button class="btn btn-primary btn-sm" onclick="location.reload()" style="width:auto;margin-right:8px">+ Nova Visita</button>
+<button class="btn btn-outline btn-sm" id="btn-go-dash" style="width:auto">📊 Dashboard</button>
 </div>
 </div>
 </div>
-<!-- ══════════════════════════════════════════════════════
-     DASHBOARD
-══════════════════════════════════════════════════════ -->
+<!-- DASHBOARD -->
 <div class="page" id="page-dash">
-<div class="api-banner" id="api-banner-dash" style="display:none">
-<strong>⚙️ Configure o link do Google Sheets primeiro</strong>
-    Vá para a aba Formulário e configure o link do Web App.
-  </div>
-<!-- Filtros -->
 <div class="filters">
 <div class="fg"><label>Empresa</label>
 <select id="df-emp"><option value="">Todas</option><option>Fibravit</option><option>Service</option></select>
@@ -413,27 +398,23 @@ tr:hover td{background:var(--azul-bg)}
 <div class="fg"><label>De</label><input id="df-de" type="date"/></div>
 <div class="fg"><label>Até</label><input id="df-ate" type="date"/></div>
 <div class="fg"><label>Cliente</label><input id="df-cli" placeholder="Buscar..." style="min-width:110px" type="text"/></div>
-<button class="btn btn-primary btn-sm" onclick="applyFilters()">🔍 Filtrar</button>
-<button class="btn btn-outline btn-sm" onclick="clearFilters()">✕ Limpar</button>
-<button class="btn btn-sm" onclick="loadDash()" style="background:#276221;color:#fff">🔄 Atualizar</button>
+<button class="btn btn-primary btn-sm" id="btn-filtrar">🔍 Filtrar</button>
+<button class="btn btn-outline btn-sm" id="btn-limpar">✕ Limpar</button>
+<button class="btn btn-sm" id="btn-atualizar" style="background:#276221;color:#fff">🔄 Atualizar</button>
 </div>
-<!-- KPIs -->
 <div class="kpi-grid" id="kpi-grid"></div>
-<!-- Gráficos -->
 <div class="chart-grid">
 <div class="chart-card"><h3>📅 Visitas por Mês</h3><canvas id="ch-mes"></canvas></div>
 <div class="chart-card"><h3>🔧 Tipos de Visita</h3><canvas id="ch-tipo"></canvas></div>
 <div class="chart-card"><h3>✅ CheckMob</h3><canvas id="ch-chk"></canvas></div>
 <div class="chart-card"><h3>🎯 Objetivos</h3><canvas id="ch-obj"></canvas></div>
 </div>
-<!-- Coordenadores -->
 <div class="card">
 <div class="card-title">👤 Desempenho por Coordenador</div>
 <div class="coord-grid" id="coord-grid"></div>
 </div>
-<!-- Tabela -->
 <div class="card">
-<div class="card-title">📋 Histórico de Visitas <span id="cnt" style="font-size:.76rem;color:#aaa;font-weight:400"></span></div>
+<div class="card-title">📋 Histórico <span id="cnt" style="font-size:.76rem;color:#aaa;font-weight:400"></span></div>
 <div class="tbl-wrap">
 <table>
 <thead><tr>
@@ -442,142 +423,230 @@ tr:hover td{background:var(--azul-bg)}
 </tr></thead>
 <tbody id="tbody"></tbody>
 </table>
-<div class="empty" id="empty" style="display:none">
-        Nenhuma visita encontrada. <a href="#" onclick="showPage('form')" style="color:var(--azul)">Registre a primeira!</a>
+<div class="empty" id="empty" style="display:none">Nenhuma visita. <a href="#" id="link-form" style="color:var(--azul)">Registre a primeira!</a></div>
 </div>
 </div>
 </div>
-</div>
-<!-- Modal Relatório -->
+<!-- Modal -->
 <div class="overlay" id="modal">
 <div class="modal">
 <div class="modal-hdr">
 <h2>🖨️ Relatório de Visita</h2>
-<button class="modal-close" onclick="closeModal()">✕</button>
+<button class="modal-close" id="btn-close-modal">✕</button>
 </div>
 <div class="modal-body" id="modal-body"></div>
 <div class="modal-foot">
-<button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
-<button class="btn btn-sm" onclick="window.print()" style="background:#1a7a3c;color:#fff;padding:8px 20px;font-weight:700;border:none;border-radius:8px;cursor:pointer">🖨️ Imprimir / PDF</button>
+<button class="btn btn-outline btn-sm" id="btn-fechar-modal">Fechar</button>
+<button class="btn btn-sm" id="btn-imprimir" style="background:#1a7a3c;color:#fff;width:auto">🖨️ Imprimir / PDF</button>
 </div>
 </div>
 </div>
 <script>
-// ══════════════════════════════════════════════════════════════
-// CONFIGURAÇÃO
-// ══════════════════════════════════════════════════════════════
+// ── CONFIG ─────────────────────────────────────────────────────────────────
 const API_URL = 'https://script.google.com/macros/s/AKfycbyO4C24JK80Z7EwEiTBP_ZqZrmfWRrnZZp31oZJ65cDbZvxvk93pq60Hw7L0vqUpYFy/exec';
-let allData = [];
-let charts  = {};
-const pills = {};
 
-function salvarApi() {
-  const url = document.getElementById('api-url-input').value.trim();
-  if (!url.startsWith('https://script.google.com')) {
-    alert('URL inválida. Deve começar com https://script.google.com');
-    return;
+// ── ESTADO ─────────────────────────────────────────────────────────────────
+var curStep = 0;
+var pillValues = {};
+var chkValues = [false,false,false,false,false,false];
+var allData = [];
+var charts = {};
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Data e hora atuais
+  var now = new Date();
+  var pad = function(n) { return String(n).padStart(2,'0'); };
+  document.getElementById('f-data').value = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  document.getElementById('f-hora').value = pad(now.getHours())+':'+pad(now.getMinutes());
+
+  // Botões de navegação
+  document.getElementById('btn-next-0').addEventListener('click', function() { doNext(0); });
+  document.getElementById('btn-next-1').addEventListener('click', function() { doNext(1); });
+  document.getElementById('btn-next-2').addEventListener('click', function() { doNext(2); });
+  document.getElementById('btn-next-3').addEventListener('click', function() { doNext(3); });
+  document.getElementById('btn-next-4').addEventListener('click', function() { doNext(4); });
+  document.getElementById('btn-prev-1').addEventListener('click', function() { goStep(0); });
+  document.getElementById('btn-prev-2').addEventListener('click', function() { goStep(1); });
+  document.getElementById('btn-prev-3').addEventListener('click', function() { goStep(2); });
+  document.getElementById('btn-prev-4').addEventListener('click', function() { goStep(3); });
+  document.getElementById('btn-prev-5').addEventListener('click', function() { goStep(4); });
+  document.getElementById('btn-submit').addEventListener('click', submitForm);
+  document.getElementById('btn-go-dash').addEventListener('click', function() { showPage('dash'); });
+  document.getElementById('btn-add-mat').addEventListener('click', addMat);
+  document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+  document.getElementById('btn-fechar-modal').addEventListener('click', closeModal);
+  document.getElementById('btn-imprimir').addEventListener('click', function() { window.print(); });
+  document.getElementById('btn-filtrar').addEventListener('click', applyFilters);
+  document.getElementById('btn-limpar').addEventListener('click', clearFilters);
+  document.getElementById('btn-atualizar').addEventListener('click', loadDash);
+  document.getElementById('link-form').addEventListener('click', function(e) { e.preventDefault(); showPage('form'); });
+
+  // Pills
+  setupPill('pill-contato-sim', 'contato', 'Sim', 'p-sim', function() {
+    document.getElementById('fd-pessoas').style.display='block';
+    document.getElementById('fd-motivo').style.display='none';
+  });
+  setupPill('pill-contato-nao', 'contato', 'Não', 'p-nao', function() {
+    document.getElementById('fd-pessoas').style.display='none';
+    document.getElementById('fd-motivo').style.display='block';
+  });
+  setupPill('pill-prox-sim', 'proximo', 'Sim', 'p-sim', function() { document.getElementById('fd-prox').style.display='block'; });
+  setupPill('pill-prox-nao', 'proximo', 'Não', 'p-nao', function() { document.getElementById('fd-prox').style.display='none'; });
+  setupPill('pill-chk-sim', 'checkmob', 'Sim', 'p-sim', null);
+  setupPill('pill-chk-nao', 'checkmob', 'Não', 'p-nao', null);
+  setupPill('pill-chk-par', 'checkmob', 'Parcial', 'p-par', null);
+  setupPill('pill-foto-sim', 'fotos', 'Sim', 'p-sim', null);
+  setupPill('pill-foto-nao', 'fotos', 'Não', 'p-nao', null);
+  setupPill('pill-foto-na', 'fotos', 'N/A', 'p-par', null);
+  setupPill('pill-rec-sim', 'recibo', 'Sim', 'p-sim', null);
+  setupPill('pill-rec-nao', 'recibo', 'Não', 'p-nao', null);
+  setupPill('pill-rec-na', 'recibo', 'N/A', 'p-par', null);
+  setupPill('pill-pend-sim', 'tem_pend', 'Sim', 'p-nao', function() { document.getElementById('pend-det').style.display='block'; });
+  setupPill('pill-pend-nao', 'tem_pend', 'Não', 'p-sim', function() { document.getElementById('pend-det').style.display='none'; });
+  setupPill('pill-prior-alta', 'prior', 'Alta', 'p-alta', null);
+  setupPill('pill-prior-media', 'prior', 'Média', 'p-media', null);
+  setupPill('pill-prior-baixa', 'prior', 'Baixa', 'p-baixa', null);
+  setupPill('pill-obj-tot', 'obj', 'Totalmente', 'p-sim', null);
+  setupPill('pill-obj-par', 'obj', 'Parcialmente', 'p-par', null);
+  setupPill('pill-obj-nao', 'obj', 'Não', 'p-nao', null);
+  setupPill('pill-sat-ot', 'sat', 'Ótimo', 'p-sim', null);
+  setupPill('pill-sat-bom', 'sat', 'Bom', 'p-sim', null);
+  setupPill('pill-sat-reg', 'sat', 'Regular', 'p-par', null);
+  setupPill('pill-sat-ruim', 'sat', 'Ruim', 'p-nao', null);
+  setupPill('pill-sat-na', 'sat', 'N/A', 'p-sel', null);
+
+  // Checklists
+  for(var i=0;i<6;i++) {
+    (function(idx) {
+      document.getElementById('chk'+idx).addEventListener('click', function() { toggleChk(idx); });
+    })(i);
   }
-  API_URL = url;
-  localStorage.setItem('fibravit_api_url', url);
-  // API configurada
-  alert('✅ Link salvo! Agora você pode usar o sistema.');
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  // API configurada // Link já configurado
-  else document.getElementById('api-url-input').value = API_URL;
-  const now = new Date();
-  const pad = n => String(n).padStart(2,'0');
-  document.getElementById('f-data').value = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
-  document.getElementById('f-hora').value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
 });
 
-// ══════════════════════════════════════════════════════════════
-// NAVEGAÇÃO
-// ══════════════════════════════════════════════════════════════
-function showPage(p) {
-  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-  document.getElementById('page-' + p).classList.add('active');
-  document.querySelectorAll('.nav-tab')[p === 'form' ? 0 : 1].classList.add('active');
-  document.getElementById('prog-wrap').style.display = p === 'form' ? 'block' : 'none';
-  if (p === 'dash') loadDash();
-  window.scrollTo({top:0,behavior:'smooth'});
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function setupPill(id, key, val, cls, callback) {
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('click', function() {
+    pillValues[key] = val;
+    // Remover seleção de todos os pills do mesmo grupo
+    var parent = el.parentElement;
+    var siblings = parent.querySelectorAll('.pill');
+    for(var i=0;i<siblings.length;i++) {
+      siblings[i].className = 'pill';
+    }
+    el.classList.add(cls);
+    if(callback) callback();
+  });
 }
 
-// ══════════════════════════════════════════════════════════════
-// FORMULÁRIO — STEPS
-// ══════════════════════════════════════════════════════════════
-let curStep = 0;
-function goStep(n) {
-  document.querySelectorAll('.step').forEach((s,i) => s.classList.toggle('active', i===n));
-  document.querySelectorAll('.step-btn').forEach((b,i) => { b.classList.remove('active'); if(i===n) b.classList.add('active'); });
-  curStep = n;
-  document.getElementById('prog').style.width = (n/5*100) + '%';
-  document.getElementById('step-nav').children[n].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function markDone(n) { const b=document.querySelectorAll('.step-btn')[n]; b.classList.remove('active'); b.classList.add('done'); }
-function nextStep(n) { if(!validateStep(n)) return; markDone(n); goStep(n+1); }
-function prevStep(n) { goStep(n-1); }
-
-function validateStep(n) {
-  if(n===0) {
-    const ids=['f-empresa','f-coord','f-data','f-hora','f-cliente','f-local','f-tipo','f-objetivo'];
-    for(const id of ids) { if(!document.getElementById(id).value.trim()) { alert('Preencha todos os campos obrigatórios (*).'); document.getElementById(id).focus(); return false; } }
+function toggleChk(idx) {
+  chkValues[idx] = !chkValues[idx];
+  var el = document.getElementById('chk'+idx);
+  if(chkValues[idx]) {
+    el.classList.add('on');
+  } else {
+    el.classList.remove('on');
   }
-  if(n===1 && !pills['contato']) { alert('Informe se houve contato com o cliente.'); return false; }
-  if(n===2) { if(!pills['checkmob']) { alert('Informe o status do CheckMob.'); return false; } if(!pills['fotos']) { alert('Informe o status das fotos.'); return false; } }
-  if(n===5 && !pills['obj']) { alert('Informe se a visita atingiu seus objetivos.'); return false; }
-  return true; }
-  }
-  if(n===1 && !pills['contato']) { alert('Informe se houve contato com o cliente.'); return false; }
-  if(n===2) { if(!pills['checkmob']) { alert('Informe o status do CheckMob.'); return false; } if(!pills['fotos']) { alert('Informe o status das fotos.'); return false; } }
-  if(n===5 && !pills['obj']) { alert('Informe se a visita atingiu seus objetivos.'); return false; }
-  return true;
-}
-
-function setPill(key, val, el, cls) {
-  pills[key] = val;
-  el.closest('.pills').querySelectorAll('.pill').forEach(p => p.className = 'pill');
-  el.classList.add(cls);
-  if(key==='contato') {
-    document.getElementById('fd-pessoas').style.display = val==='Sim' ? 'block' : 'none';
-    document.getElementById('fd-motivo').style.display  = val==='Não' ? 'block' : 'none';
-  }
-}
-
-function toggleChk(el) { const cb=el.querySelector('input'); cb.checked=!cb.checked; el.classList.toggle('on',cb.checked); }
-
-function addMat() {
-  const d=document.createElement('div'); d.className='mat-item';
-  d.innerHTML=`<button class="mat-del" onclick="this.parentElement.remove()">✕</button>
-    <div class="row2">
-      <div class="field"><label>Material / Item</label><input type="text" class="mn" placeholder="Ex: Papel higiênico"/></div>
-      <div class="field"><label>Qtd. entregue</label><input type="text" class="mq" placeholder="Ex: 10 rolos"/></div>
-    </div>`;
-  document.getElementById('mat-list').appendChild(d);
-}
-
-function getMateriais() {
-  return [...document.querySelectorAll('.mat-item')].map(i => {
-    const n=i.querySelector('.mn').value.trim(); const q=i.querySelector('.mq').value.trim();
-    return n ? n+(q?' ('+q+')':'') : '';
-  }).filter(Boolean).join('; ');
 }
 
 function getServicos() {
-  const checked=[...document.querySelectorAll('#chk-serv input:checked')].map(c=>c.value);
-  const desc=document.getElementById('f-desc').value.trim();
-  return [checked.join(', '), desc].filter(Boolean).join(' | ');
+  var labels = ['Abastecimento de água','Sucção / esgotamento','Manutenção','Limpeza geral','Entrega de materiais','Inspeção geral'];
+  var checked = [];
+  for(var i=0;i<6;i++) { if(chkValues[i]) checked.push(labels[i]); }
+  var desc = document.getElementById('f-desc').value.trim();
+  var result = checked.join(', ');
+  if(desc) result += (result ? ' | ' : '') + desc;
+  return result;
 }
 
-async function submitForm() {
-  if(!API_URL) { alert('Configure o link do Google Sheets primeiro!'); return; }
-  const btn = document.querySelector('.btn-success');
-  btn.disabled=true; btn.textContent='⏳ Enviando...';
-  const pend = pills['tem_pend']==='Sim';
-  const payload = {
+function getMateriais() {
+  var items = document.querySelectorAll('.mat-item');
+  var result = [];
+  for(var i=0;i<items.length;i++) {
+    var n = items[i].querySelector('.mn').value.trim();
+    var q = items[i].querySelector('.mq').value.trim();
+    if(n) result.push(n + (q ? ' ('+q+')' : ''));
+  }
+  return result.join('; ');
+}
+
+function addMat() {
+  var d = document.createElement('div');
+  d.className = 'mat-item';
+  d.innerHTML = '<button class="mat-del" type="button">✕</button><div class="row2"><div class="field"><label>Material / Item</label><input type="text" class="mn" placeholder="Ex: Papel higiênico"/></div><div class="field"><label>Qtd. entregue</label><input type="text" class="mq" placeholder="Ex: 10 rolos"/></div></div>';
+  d.querySelector('.mat-del').addEventListener('click', function() { d.remove(); });
+  document.getElementById('mat-list').appendChild(d);
+}
+
+// ── NAVEGAÇÃO ──────────────────────────────────────────────────────────────
+function showPage(p) {
+  document.getElementById('page-form').classList.remove('active');
+  document.getElementById('page-dash').classList.remove('active');
+  document.getElementById('tab-form').classList.remove('active');
+  document.getElementById('tab-dash').classList.remove('active');
+  document.getElementById('page-'+p).classList.add('active');
+  document.getElementById('tab-'+p).classList.add('active');
+  document.getElementById('prog-wrap').style.display = p==='form' ? 'block' : 'none';
+  if(p==='dash') loadDash();
+  window.scrollTo(0,0);
+}
+
+function goStep(n) {
+  for(var i=0;i<6;i++) {
+    document.getElementById('s'+i).classList.remove('active');
+    var sb = document.getElementById('sbtn'+i);
+    sb.classList.remove('active');
+  }
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('sbtn'+n).classList.add('active');
+  curStep = n;
+  document.getElementById('prog').style.width = (n/5*100)+'%';
+  document.getElementById('sbtn'+n).scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  window.scrollTo(0,0);
+}
+
+function doNext(n) {
+  // Validação
+  if(n===0) {
+    var ids = ['f-empresa','f-coord','f-data','f-hora','f-cliente','f-local','f-tipo','f-objetivo'];
+    for(var i=0;i<ids.length;i++) {
+      var el = document.getElementById(ids[i]);
+      if(!el.value.trim()) {
+        alert('Preencha todos os campos obrigatórios (*).');
+        el.focus();
+        return;
+      }
+    }
+  }
+  if(n===1 && !pillValues['contato']) {
+    alert('Informe se houve contato com o cliente.');
+    return;
+  }
+  if(n===2) {
+    if(!pillValues['checkmob']) { alert('Informe o status do CheckMob.'); return; }
+    if(!pillValues['fotos']) { alert('Informe o status das fotos.'); return; }
+  }
+  if(n===5 && !pillValues['obj']) {
+    alert('Informe se a visita atingiu seus objetivos.');
+    return;
+  }
+  // Marcar como done
+  var sb = document.getElementById('sbtn'+n);
+  sb.classList.remove('active');
+  sb.classList.add('done');
+  // Avançar
+  goStep(n+1);
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────
+function submitForm() {
+  var btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = '⏳ Enviando...';
+  var pend = pillValues['tem_pend']==='Sim';
+  var payload = {
     data_visita:         document.getElementById('f-data').value,
     horario:             document.getElementById('f-hora').value,
     empresa:             document.getElementById('f-empresa').value,
@@ -588,176 +657,129 @@ async function submitForm() {
     contrato:            document.getElementById('f-os').value,
     tipo_visita:         document.getElementById('f-tipo').value,
     objetivo:            document.getElementById('f-objetivo').value,
-    contato_cliente:     pills['contato']||'',
-    pessoas_contatadas:  pills['contato']==='Sim' ? document.getElementById('f-pessoas').value : document.getElementById('f-motivo').value,
+    contato_cliente:     pillValues['contato']||'',
+    pessoas_contatadas:  pillValues['contato']==='Sim' ? document.getElementById('f-pessoas').value : document.getElementById('f-motivo').value,
     proximo_contato:     document.getElementById('f-prox-data').value||'',
     servicos:            getServicos(),
-    checkmob:            pills['checkmob']||'',
-    fotos:               pills['fotos']||'',
+    checkmob:            pillValues['checkmob']||'',
+    fotos:               pillValues['fotos']||'',
     materiais:           getMateriais(),
-    recibo:              pills['recibo']||'',
+    recibo:              pillValues['recibo']||'',
     pendencias:          pend ? document.getElementById('f-pend').value : '',
-    prioridade:          pend ? (pills['prior']||'') : '',
+    prioridade:          pend ? (pillValues['prior']||'') : '',
     responsavel_pend:    pend ? document.getElementById('f-resp').value : '',
     prazo_pend:          pend ? document.getElementById('f-prazo').value : '',
-    objetivos_atingidos: pills['obj']||'',
-    satisfacao:          pills['sat']||'',
-    observacoes:         document.getElementById('f-obs').value,
+    objetivos_atingidos: pillValues['obj']||'',
+    satisfacao:          pillValues['sat']||'',
+    observacoes:         document.getElementById('f-obs').value
   };
-  try {
-    const res = await fetch(API_URL, { method:'POST', body: JSON.stringify(payload) });
-    const data = await res.json();
-    if(data.success) {
-      document.getElementById('suc-id').textContent = data.id;
-      document.querySelectorAll('.step').forEach(s => s.style.display='none');
-      document.getElementById('step-nav').style.display='none';
-      document.getElementById('success').style.display='block';
-      document.getElementById('prog').style.width='100%';
-    } else { alert('Erro: '+data.error); btn.disabled=false; btn.textContent='✅ Enviar Relatório'; }
-  } catch(e) {
-    alert('Erro de conexão. Verifique o link do Google Sheets.');
-    btn.disabled=false; btn.textContent='✅ Enviar Relatório';
-  }
+  fetch(API_URL, { method:'POST', body: JSON.stringify(payload) })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if(data.success) {
+        document.getElementById('suc-id').textContent = data.id;
+        for(var i=0;i<6;i++) document.getElementById('s'+i).style.display='none';
+        document.getElementById('step-nav').style.display='none';
+        document.getElementById('success').style.display='block';
+        document.getElementById('prog').style.width='100%';
+      } else {
+        alert('Erro: '+data.error);
+        btn.disabled=false; btn.textContent='✅ Enviar Relatório';
+      }
+    })
+    .catch(function(e) {
+      alert('Erro de conexão. Verifique sua internet.');
+      btn.disabled=false; btn.textContent='✅ Enviar Relatório';
+    });
 }
 
-// ══════════════════════════════════════════════════════════════
-// DASHBOARD
-// ══════════════════════════════════════════════════════════════
-async function loadDash() {
-  if(!API_URL) { document.getElementById('api-banner-dash').style.display='block'; return; }
-  document.getElementById('api-banner-dash').style.display='none';
-  try {
-    const res = await fetch(API_URL + '?action=get');
-    const data = await res.json();
-    allData = data.visitas || [];
-    renderDash(allData);
-  } catch(e) {
-    document.getElementById('empty').style.display='block';
-    document.getElementById('empty').textContent='Erro ao carregar dados. Verifique o link do Google Sheets.';
-  }
+// ── DASHBOARD ──────────────────────────────────────────────────────────────
+function loadDash() {
+  fetch(API_URL+'?action=get')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      allData = data.visitas||[];
+      renderDash(allData);
+    })
+    .catch(function(e) {
+      document.getElementById('empty').style.display='block';
+      document.getElementById('empty').textContent='Erro ao carregar. Verifique sua conexão.';
+    });
 }
 
 function applyFilters() {
-  const emp   = document.getElementById('df-emp').value;
-  const coord = document.getElementById('df-coord').value;
-  const de    = document.getElementById('df-de').value;
-  const ate   = document.getElementById('df-ate').value;
-  const cli   = document.getElementById('df-cli').value.toLowerCase();
-  const filtered = allData.filter(v => {
-    if(emp   && v['Empresa']!==emp) return false;
-    if(coord && v['Coordenador']!==coord) return false;
-    if(de    && v['Data da Visita']<de) return false;
-    if(ate   && v['Data da Visita']>ate) return false;
-    if(cli   && !(v['Cliente / Evento']||'').toLowerCase().includes(cli)) return false;
+  var emp=document.getElementById('df-emp').value;
+  var coord=document.getElementById('df-coord').value;
+  var de=document.getElementById('df-de').value;
+  var ate=document.getElementById('df-ate').value;
+  var cli=document.getElementById('df-cli').value.toLowerCase();
+  var filtered=allData.filter(function(v) {
+    if(emp&&v['Empresa']!==emp) return false;
+    if(coord&&v['Coordenador']!==coord) return false;
+    if(de&&v['Data da Visita']<de) return false;
+    if(ate&&v['Data da Visita']>ate) return false;
+    if(cli&&!(v['Cliente / Evento']||'').toLowerCase().includes(cli)) return false;
     return true;
   });
   renderDash(filtered);
 }
 
 function clearFilters() {
-  ['df-emp','df-coord'].forEach(id => document.getElementById(id).value='');
-  ['df-de','df-ate','df-cli'].forEach(id => document.getElementById(id).value='');
+  ['df-emp','df-coord'].forEach(function(id){document.getElementById(id).value='';});
+  ['df-de','df-ate','df-cli'].forEach(function(id){document.getElementById(id).value='';});
   renderDash(allData);
 }
 
 function renderDash(data) {
-  // KPIs
-  const t=data.length;
-  const cc=data.filter(v=>v['Houve Contato com Cliente?']==='Sim').length;
-  const sc=data.filter(v=>v['Houve Contato com Cliente?']==='Não').length;
-  const ck=data.filter(v=>v['Registro no CheckMob?']==='Sim').length;
-  const cp=data.filter(v=>v['Itens Pendentes']&&v['Itens Pendentes'].trim()).length;
-  const al=data.filter(v=>v['Prioridade Pendências']==='Alta').length;
-  const ot=data.filter(v=>v['Visita Atingiu Objetivos?']==='Totalmente').length;
-  const op=data.filter(v=>v['Visita Atingiu Objetivos?']==='Parcialmente').length;
-
-  document.getElementById('kpi-grid').innerHTML=`
-    <div class="kpi"><div class="n">${t}</div><div class="l">Total Visitas</div></div>
-    <div class="kpi g"><div class="n">${cc}</div><div class="l">Com Contato</div></div>
-    <div class="kpi r"><div class="n">${sc}</div><div class="l">Sem Contato</div></div>
-    <div class="kpi g"><div class="n">${ck}</div><div class="l">CheckMob OK</div></div>
-    <div class="kpi y"><div class="n">${cp}</div><div class="l">Com Pendências</div></div>
-    <div class="kpi r"><div class="n">${al}</div><div class="l">Prioridade Alta</div></div>
-    <div class="kpi g"><div class="n">${ot}</div><div class="l">Obj. Totais</div></div>
-    <div class="kpi y"><div class="n">${op}</div><div class="l">Obj. Parciais</div></div>`;
-
-  // Gráficos
-  const az='#1F4E79',az2='#2E75B6',vd='#276221',vm='#9C0006',am='#d69e2e';
-  const pm={},pt={};
-  data.forEach(v=>{
-    const m=(v['Data da Visita']||'').substring(0,7); if(m) pm[m]=(pm[m]||0)+1;
-    const t=v['Tipo de Visita']||'Outros'; pt[t]=(pt[t]||0)+1;
-  });
-  mkChart('ch-mes','bar',Object.keys(pm).sort(),Object.keys(pm).sort().map(m=>pm[m]),'Visitas',[az2]);
+  var t=data.length;
+  var cc=data.filter(function(v){return v['Houve Contato com Cliente?']==='Sim';}).length;
+  var sc=data.filter(function(v){return v['Houve Contato com Cliente?']==='Não';}).length;
+  var ck=data.filter(function(v){return v['Registro no CheckMob?']==='Sim';}).length;
+  var cp=data.filter(function(v){return v['Itens Pendentes']&&v['Itens Pendentes'].trim();}).length;
+  var al=data.filter(function(v){return v['Prioridade Pendências']==='Alta';}).length;
+  var ot=data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Totalmente';}).length;
+  var op=data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Parcialmente';}).length;
+  document.getElementById('kpi-grid').innerHTML='<div class="kpi"><div class="n">'+t+'</div><div class="l">Total Visitas</div></div><div class="kpi g"><div class="n">'+cc+'</div><div class="l">Com Contato</div></div><div class="kpi r"><div class="n">'+sc+'</div><div class="l">Sem Contato</div></div><div class="kpi g"><div class="n">'+ck+'</div><div class="l">CheckMob OK</div></div><div class="kpi y"><div class="n">'+cp+'</div><div class="l">Com Pendências</div></div><div class="kpi r"><div class="n">'+al+'</div><div class="l">Prioridade Alta</div></div><div class="kpi g"><div class="n">'+ot+'</div><div class="l">Obj. Totais</div></div><div class="kpi y"><div class="n">'+op+'</div><div class="l">Obj. Parciais</div></div>';
+  var pm={},pt={};
+  data.forEach(function(v){var m=(v['Data da Visita']||'').substring(0,7);if(m)pm[m]=(pm[m]||0)+1;var tp=v['Tipo de Visita']||'Outros';pt[tp]=(pt[tp]||0)+1;});
+  var az='#1F4E79',az2='#2E75B6',vd='#276221',vm='#9C0006',am='#d69e2e';
+  mkChart('ch-mes','bar',Object.keys(pm).sort(),Object.keys(pm).sort().map(function(m){return pm[m];}),'Visitas',[az2]);
   mkChart('ch-tipo','doughnut',Object.keys(pt),Object.values(pt),'Visitas',[az,az2,'#5BA3D9',vd,am,vm]);
-  mkChart('ch-chk','doughnut',['Sim','Não','Parcial'],
-    [data.filter(v=>v['Registro no CheckMob?']==='Sim').length,
-     data.filter(v=>v['Registro no CheckMob?']==='Não').length,
-     data.filter(v=>v['Registro no CheckMob?']==='Parcial').length],'Visitas',[vd,vm,am]);
-  mkChart('ch-obj','doughnut',['Totalmente','Parcialmente','Não'],
-    [data.filter(v=>v['Visita Atingiu Objetivos?']==='Totalmente').length,
-     data.filter(v=>v['Visita Atingiu Objetivos?']==='Parcialmente').length,
-     data.filter(v=>v['Visita Atingiu Objetivos?']==='Não').length],'Visitas',[vd,am,vm]);
-
-  // Coordenadores
-  const coords={};
-  data.forEach(v=>{
-    const c=v['Coordenador']||'Outros';
-    if(!coords[c]) coords[c]={t:0,cc:0,ck:0};
-    coords[c].t++;
-    if(v['Houve Contato com Cliente?']==='Sim') coords[c].cc++;
-    if(v['Registro no CheckMob?']==='Sim') coords[c].ck++;
-  });
-  const cg=document.getElementById('coord-grid');
-  cg.innerHTML=Object.keys(coords).length ? Object.entries(coords).map(([n,s])=>`
-    <div class="coord-card"><h4>👤 ${n}</h4>
-      <div class="cs"><span>Total</span><span>${s.t}</span></div>
-      <div class="cs"><span>Com contato</span><span>${s.cc}</span></div>
-      <div class="cs"><span>CheckMob OK</span><span>${s.ck}</span></div>
-      <div class="cs"><span>Conformidade</span><span>${s.t?Math.round(s.ck/s.t*100):0}%</span></div>
-    </div>`).join('') : '<p style="color:#aaa;font-size:.86rem">Nenhum dado.</p>';
-
-  // Tabela
-  const tbody=document.getElementById('tbody');
-  const empty=document.getElementById('empty');
-  document.getElementById('cnt').textContent=data.length?`(${data.length} registro${data.length!==1?'s':''})`:'' ;
+  mkChart('ch-chk','doughnut',['Sim','Não','Parcial'],[data.filter(function(v){return v['Registro no CheckMob?']==='Sim';}).length,data.filter(function(v){return v['Registro no CheckMob?']==='Não';}).length,data.filter(function(v){return v['Registro no CheckMob?']==='Parcial';}).length],'Visitas',[vd,vm,am]);
+  mkChart('ch-obj','doughnut',['Totalmente','Parcialmente','Não'],[data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Totalmente';}).length,data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Parcialmente';}).length,data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Não';}).length],'Visitas',[vd,am,vm]);
+  var coords={};
+  data.forEach(function(v){var c=v['Coordenador']||'Outros';if(!coords[c])coords[c]={t:0,cc:0,ck:0};coords[c].t++;if(v['Houve Contato com Cliente?']==='Sim')coords[c].cc++;if(v['Registro no CheckMob?']==='Sim')coords[c].ck++;});
+  var cg=document.getElementById('coord-grid');
+  cg.innerHTML=Object.keys(coords).length?Object.entries(coords).map(function(e){var n=e[0],s=e[1];return'<div class="coord-card"><h4>👤 '+n+'</h4><div class="cs"><span>Total</span><span>'+s.t+'</span></div><div class="cs"><span>Com contato</span><span>'+s.cc+'</span></div><div class="cs"><span>CheckMob OK</span><span>'+s.ck+'</span></div><div class="cs"><span>Conformidade</span><span>'+(s.t?Math.round(s.ck/s.t*100):0)+'%</span></div></div>';}).join(''):'<p style="color:#aaa;font-size:.86rem">Nenhum dado.</p>';
+  var tbody=document.getElementById('tbody');
+  var empty=document.getElementById('empty');
+  document.getElementById('cnt').textContent=data.length?'('+data.length+' registro'+(data.length!==1?'s':'')+')'  :'';
   if(!data.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  tbody.innerHTML=[...data].reverse().map(v=>{
-    const cm=v['Registro no CheckMob?']||'';
-    const pend=v['Itens Pendentes']?v['Prioridade Pendências']||'Sim':'Não';
-    const obj=v['Visita Atingiu Objetivos?']||'';
-    const bcm=cm==='Sim'?'b-sim':cm==='Não'?'b-nao':'b-par';
-    const bp=pend==='Não'?'b-sim':pend==='Alta'?'b-alta':pend==='Média'?'b-media':'b-baixa';
-    const bo=obj==='Totalmente'?'b-sim':obj==='Não'?'b-nao':'b-par';
-    return`<tr>
-      <td><strong>${v['ID']||''}</strong></td>
-      <td>${v['Data da Visita']||''}</td>
-      <td>${v['Empresa']||''}</td>
-      <td>${v['Coordenador']||''}</td>
-      <td>${v['Cliente / Evento']||''}</td>
-      <td style="font-size:.76rem">${v['Tipo de Visita']||''}</td>
-      <td><span class="badge ${bcm}">${cm||'—'}</span></td>
-      <td><span class="badge ${bp}">${pend}</span></td>
-      <td><span class="badge ${bo}">${obj||'—'}</span></td>
-      <td><button class="btn btn-primary" style="padding:4px 10px;font-size:.76rem;border-radius:6px" onclick='openRel(${JSON.stringify(v)})'>🖨️</button></td>
-    </tr>`;
+  tbody.innerHTML=data.slice().reverse().map(function(v){
+    var cm=v['Registro no CheckMob?']||'';
+    var pend=v['Itens Pendentes']?v['Prioridade Pendências']||'Sim':'Não';
+    var obj=v['Visita Atingiu Objetivos?']||'';
+    var bcm=cm==='Sim'?'b-sim':cm==='Não'?'b-nao':'b-par';
+    var bp=pend==='Não'?'b-sim':pend==='Alta'?'b-alta':pend==='Média'?'b-media':'b-baixa';
+    var bo=obj==='Totalmente'?'b-sim':obj==='Não'?'b-nao':'b-par';
+    return '<tr><td><strong>'+( v['ID']||'')+'</strong></td><td>'+(v['Data da Visita']||'')+'</td><td>'+(v['Empresa']||'')+'</td><td>'+(v['Coordenador']||'')+'</td><td>'+(v['Cliente / Evento']||'')+'</td><td style="font-size:.76rem">'+(v['Tipo de Visita']||'')+'</td><td><span class="badge '+bcm+'">'+(cm||'—')+'</span></td><td><span class="badge '+bp+'">'+pend+'</span></td><td><span class="badge '+bo+'">'+(obj||'—')+'</span></td><td><button class="btn btn-primary" style="padding:4px 10px;font-size:.76rem;border-radius:6px;width:auto" data-id="'+(v['ID']||'')+'">🖨️</button></td></tr>';
   }).join('');
+  // Adicionar eventos nos botões de relatório
+  tbody.querySelectorAll('button[data-id]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id = this.getAttribute('data-id');
+      var visita = allData.find(function(v){return v['ID']===id;});
+      if(visita) openRel(visita);
+    });
+  });
 }
 
 function mkChart(id,type,labels,data,label,colors){
-  if(charts[id]) charts[id].destroy();
-  charts[id]=new Chart(document.getElementById(id).getContext('2d'),{
-    type,data:{labels,datasets:[{label,data,backgroundColor:colors,borderWidth:type==='bar'?0:2,borderColor:'#fff'}]},
-    options:{responsive:true,maintainAspectRatio:true,
-      plugins:{legend:{position:type==='bar'?'none':'bottom',labels:{font:{size:10}}}},
-      scales:type==='bar'?{y:{beginAtZero:true,ticks:{stepSize:1}}}:{}}
-  });
+  if(charts[id])charts[id].destroy();
+  charts[id]=new Chart(document.getElementById(id).getContext('2d'),{type:type,data:{labels:labels,datasets:[{label:label,data:data,backgroundColor:colors,borderWidth:type==='bar'?0:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:type==='bar'?'none':'bottom',labels:{font:{size:10}}}},scales:type==='bar'?{y:{beginAtZero:true,ticks:{stepSize:1}}}:{}}});
 }
 
-// ══════════════════════════════════════════════════════════════
-// RELATÓRIO DE IMPRESSÃO
-// ══════════════════════════════════════════════════════════════
 function openRel(v) {
   document.getElementById('modal-body').innerHTML = buildRel(v);
   document.getElementById('modal').classList.add('open');
@@ -766,82 +788,22 @@ function closeModal() { document.getElementById('modal').classList.remove('open'
 
 function bv(val) {
   if(!val) return '<span style="color:#aaa">—</span>';
-  const cls=['Sim','Totalmente','Ótimo','Bom'].includes(val)?'ok':val==='Não'?'no':'pa';
-  return`<span class="${cls}">${val}</span>`;
+  var cls=['Sim','Totalmente','Ótimo','Bom'].indexOf(val)>=0?'ok':val==='Não'?'no':'pa';
+  return '<span class="'+cls+'">'+val+'</span>';
 }
 
 function buildRel(v) {
-  const dt=new Date().toLocaleDateString('pt-BR');
-  const hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  return`
-  <div style="border-bottom:3px solid #1F4E79;padding-bottom:12px;margin-bottom:14px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
-      <div>
-        <div style="font-size:1.2rem;font-weight:800;color:#1F4E79">GRUPO FIBRAVIT</div>
-        <div style="font-size:.8rem;color:#595959;margin-top:2px">Relatório de Visita Operacional</div>
-      </div>
-      <div style="text-align:right;font-size:.76rem;color:#595959;line-height:1.6">
-        <div>ID: <strong style="color:#1F4E79;font-size:1rem">${v['ID']||'—'}</strong></div>
-        <div>Emitido: ${dt} às ${hora}</div>
-        <div>Empresa: <strong>${v['Empresa']||'—'}</strong></div>
-      </div>
-    </div>
-  </div>
-  <div class="rel-sec"><div class="rel-bar">1. Identificação da Visita</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 18px">
-      <div class="rel-row"><span class="rel-lbl">Data:</span><span class="rel-val">${v['Data da Visita']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Horário:</span><span class="rel-val">${v['Horário']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Empresa:</span><span class="rel-val">${v['Empresa']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Coordenador:</span><span class="rel-val">${v['Coordenador']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Equipe:</span><span class="rel-val">${v['Equipe Presente']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Nº Contrato / OS:</span><span class="rel-val">${v['Nº Contrato / OS']||'—'}</span></div>
-      <div class="rel-row" style="grid-column:1/-1"><span class="rel-lbl">Cliente / Evento:</span><span class="rel-val">${v['Cliente / Evento']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Local / Cidade:</span><span class="rel-val">${v['Local / Cidade']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Tipo de visita:</span><span class="rel-val">${v['Tipo de Visita']||'—'}</span></div>
-      <div class="rel-row" style="grid-column:1/-1"><span class="rel-lbl">Objetivo:</span><span class="rel-val">${v['Objetivo da Visita']||'—'}</span></div>
-    </div>
-  </div>
-  <div class="rel-sec"><div class="rel-bar">2. Contatos Realizados</div>
-    <div class="rel-row"><span class="rel-lbl">Houve contato?</span><span class="rel-val">${bv(v['Houve Contato com Cliente?'])}</span></div>
-    <div class="rel-row"><span class="rel-lbl">Pessoas / Motivo:</span><span class="rel-val" style="white-space:pre-line">${v['Pessoas Contatadas']||'—'}</span></div>
-    <div class="rel-row"><span class="rel-lbl">Próximo contato:</span><span class="rel-val">${v['Próximo Contato']||'—'}</span></div>
-  </div>
-  <div class="rel-sec"><div class="rel-bar">3. Serviços e Atividades</div>
-    <div class="rel-row"><span class="rel-lbl">Serviços executados:</span><span class="rel-val">${v['Serviços Executados']||'—'}</span></div>
-    <div class="rel-row"><span class="rel-lbl">Registro no CheckMob:</span><span class="rel-val">${bv(v['Registro no CheckMob?'])}</span></div>
-    <div class="rel-row"><span class="rel-lbl">Fotos / Evidências:</span><span class="rel-val">${bv(v['Fotos / Evidências?'])}</span></div>
-  </div>
-  <div class="rel-sec"><div class="rel-bar">4. Materiais Entregues</div>
-    <div class="rel-row"><span class="rel-lbl">Materiais:</span><span class="rel-val">${v['Materiais Entregues']||'Nenhum'}</span></div>
-    <div class="rel-row"><span class="rel-lbl">Recibo / NF:</span><span class="rel-val">${v['Recibo / NF']||'—'}</span></div>
-  </div>
-  <div class="rel-sec"><div class="rel-bar">5. Pendências</div>
-    <div class="rel-row"><span class="rel-lbl">Itens pendentes:</span><span class="rel-val" style="white-space:pre-line">${v['Itens Pendentes']||'Nenhum'}</span></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px 18px">
-      <div class="rel-row"><span class="rel-lbl">Prioridade:</span><span class="rel-val">${v['Prioridade Pendências']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Responsável:</span><span class="rel-val">${v['Responsável Pendência']||'—'}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Prazo:</span><span class="rel-val">${v['Prazo Pendência']||'—'}</span></div>
-    </div>
-  </div>
-  <div class="rel-sec"><div class="rel-bar">6. Avaliação do Coordenador</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 18px">
-      <div class="rel-row"><span class="rel-lbl">Objetivos atingidos:</span><span class="rel-val">${bv(v['Visita Atingiu Objetivos?'])}</span></div>
-      <div class="rel-row"><span class="rel-lbl">Satisfação do cliente:</span><span class="rel-val">${v['Satisfação do Cliente']||'—'}</span></div>
-    </div>
-    <div class="rel-row"><span class="rel-lbl">Observações:</span><span class="rel-val" style="white-space:pre-line">${v['Observações Gerais']||'—'}</span></div>
-  </div>
-  <div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:50px">
-    <div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.78rem;color:#444">
-      <strong>${v['Coordenador']||'Coordenador'}</strong><br/>Assinatura
-    </div>
-    <div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.78rem;color:#444">
-      Representante do Cliente<br/>Assinatura
-    </div>
-  </div>
-  <div style="margin-top:16px;padding-top:8px;border-top:1px solid #D0D8E4;display:flex;justify-content:space-between;font-size:.68rem;color:#aaa">
-    <span>Grupo Fibravit — Uso Interno — Versão 1.0</span>
-    <span>Data de envio: ${v['Data de Envio']||'—'}</span>
-  </div>`;
+  var dt=new Date().toLocaleDateString('pt-BR');
+  var hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  return '<div style="border-bottom:3px solid #1F4E79;padding-bottom:12px;margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><div style="font-size:1.2rem;font-weight:800;color:#1F4E79">GRUPO FIBRAVIT</div><div style="font-size:.8rem;color:#595959;margin-top:2px">Relatório de Visita Operacional</div></div><div style="text-align:right;font-size:.76rem;color:#595959;line-height:1.6"><div>ID: <strong style="color:#1F4E79;font-size:1rem">'+(v['ID']||'—')+'</strong></div><div>Emitido: '+dt+' às '+hora+'</div><div>Empresa: <strong>'+(v['Empresa']||'—')+'</strong></div></div></div></div>'
+  +'<div class="rel-sec"><div class="rel-bar">1. Identificação da Visita</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 18px"><div class="rel-row"><span class="rel-lbl">Data:</span><span class="rel-val">'+(v['Data da Visita']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Horário:</span><span class="rel-val">'+(v['Horário']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Empresa:</span><span class="rel-val">'+(v['Empresa']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Coordenador:</span><span class="rel-val">'+(v['Coordenador']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Equipe:</span><span class="rel-val">'+(v['Equipe Presente']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Nº Contrato / OS:</span><span class="rel-val">'+(v['Nº Contrato / OS']||'—')+'</span></div><div class="rel-row" style="grid-column:1/-1"><span class="rel-lbl">Cliente / Evento:</span><span class="rel-val">'+(v['Cliente / Evento']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Local / Cidade:</span><span class="rel-val">'+(v['Local / Cidade']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Tipo de visita:</span><span class="rel-val">'+(v['Tipo de Visita']||'—')+'</span></div><div class="rel-row" style="grid-column:1/-1"><span class="rel-lbl">Objetivo:</span><span class="rel-val">'+(v['Objetivo da Visita']||'—')+'</span></div></div></div>'
+  +'<div class="rel-sec"><div class="rel-bar">2. Contatos Realizados</div><div class="rel-row"><span class="rel-lbl">Houve contato?</span><span class="rel-val">'+bv(v['Houve Contato com Cliente?'])+'</span></div><div class="rel-row"><span class="rel-lbl">Pessoas / Motivo:</span><span class="rel-val" style="white-space:pre-line">'+(v['Pessoas Contatadas']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Próximo contato:</span><span class="rel-val">'+(v['Próximo Contato']||'—')+'</span></div></div>'
+  +'<div class="rel-sec"><div class="rel-bar">3. Serviços e Atividades</div><div class="rel-row"><span class="rel-lbl">Serviços executados:</span><span class="rel-val">'+(v['Serviços Executados']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Registro no CheckMob:</span><span class="rel-val">'+bv(v['Registro no CheckMob?'])+'</span></div><div class="rel-row"><span class="rel-lbl">Fotos / Evidências:</span><span class="rel-val">'+bv(v['Fotos / Evidências?'])+'</span></div></div>'
+  +'<div class="rel-sec"><div class="rel-bar">4. Materiais Entregues</div><div class="rel-row"><span class="rel-lbl">Materiais:</span><span class="rel-val">'+(v['Materiais Entregues']||'Nenhum')+'</span></div><div class="rel-row"><span class="rel-lbl">Recibo / NF:</span><span class="rel-val">'+(v['Recibo / NF']||'—')+'</span></div></div>'
+  +'<div class="rel-sec"><div class="rel-bar">5. Pendências</div><div class="rel-row"><span class="rel-lbl">Itens pendentes:</span><span class="rel-val" style="white-space:pre-line">'+(v['Itens Pendentes']||'Nenhum')+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px 18px"><div class="rel-row"><span class="rel-lbl">Prioridade:</span><span class="rel-val">'+(v['Prioridade Pendências']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Responsável:</span><span class="rel-val">'+(v['Responsável Pendência']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Prazo:</span><span class="rel-val">'+(v['Prazo Pendência']||'—')+'</span></div></div></div>'
+  +'<div class="rel-sec"><div class="rel-bar">6. Avaliação do Coordenador</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 18px"><div class="rel-row"><span class="rel-lbl">Objetivos atingidos:</span><span class="rel-val">'+bv(v['Visita Atingiu Objetivos?'])+'</span></div><div class="rel-row"><span class="rel-lbl">Satisfação do cliente:</span><span class="rel-val">'+(v['Satisfação do Cliente']||'—')+'</span></div></div><div class="rel-row"><span class="rel-lbl">Observações:</span><span class="rel-val" style="white-space:pre-line">'+(v['Observações Gerais']||'—')+'</span></div></div>'
+  +'<div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:50px"><div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.78rem;color:#444"><strong>'+(v['Coordenador']||'Coordenador')+'</strong><br/>Assinatura</div><div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.78rem;color:#444">Representante do Cliente<br/>Assinatura</div></div>'
+  +'<div style="margin-top:16px;padding-top:8px;border-top:1px solid #D0D8E4;display:flex;justify-content:space-between;font-size:.68rem;color:#aaa"><span>Grupo Fibravit — Uso Interno — Versão 1.0</span><span>Data de envio: '+(v['Data de Envio']||'—')+'</span></div>';
 }
 </script>
 </body>

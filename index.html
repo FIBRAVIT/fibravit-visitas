@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Grupo Fibravit — Sistema de Visitas</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--azul:#1F4E79;--azul2:#2E75B6;--azul-bg:#EBF2FA;--verde:#276221;--verde-bg:#C6EFCE;--verm:#9C0006;--verm-bg:#FFC7CE;--amar:#7B5E00;--amar-bg:#FFEB9C;--cinza:#595959;--borda:#D0D8E4;--r:14px;--sh:0 4px 20px rgba(31,78,121,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#222;min-height:100vh}
+
+/* ── TELA INICIAL ── */
+#tela-inicial{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#1F4E79 0%,#2E75B6 100%)}
+.logo-area{text-align:center;margin-bottom:36px;color:#fff}
+.logo-area .logo-icon{font-size:3.5rem;margin-bottom:10px}
+.logo-area h1{font-size:1.6rem;font-weight:800;letter-spacing:.5px}
+.logo-area p{font-size:.9rem;opacity:.8;margin-top:4px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;max-width:560px}
+@media(max-width:480px){.cards-grid{grid-template-columns:1fr}}
+.home-card{background:#fff;border-radius:var(--r);padding:28px 22px;text-align:center;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:var(--sh);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.home-card:hover,.home-card:active{transform:translateY(-4px);box-shadow:0 8px 32px rgba(31,78,121,.22)}
+.home-card .card-icon{font-size:2.8rem;margin-bottom:12px}
+.home-card h2{font-size:1.05rem;font-weight:800;color:var(--azul);margin-bottom:6px}
+.home-card p{font-size:.8rem;color:var(--cinza);line-height:1.5}
+.home-card.card-form{border-top:5px solid #276221}
+.home-card.card-gest{border-top:5px solid var(--azul)}
+.home-card .card-badge{display:inline-block;margin-top:12px;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700}
+.home-card.card-form .card-badge{background:var(--verde-bg);color:var(--verde)}
+.home-card.card-gest .card-badge{background:var(--azul-bg);color:var(--azul)}
+
+/* ── MÓDULOS ── */
+.modulo{display:none;min-height:100vh}
+.modulo.active{display:block}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--azul);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2);position:sticky;top:0;z-index:200}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.btn-home{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:#fff;padding:6px 12px;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;touch-action:manipulation}
+.topbar h1{font-size:.92rem;font-weight:800}
+.nav-tabs{display:flex;gap:5px}
+.nav-tab{padding:6px 11px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.8);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;touch-action:manipulation;white-space:nowrap}
+.nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.6)}
+
+/* ── PROG ── */
+.prog-wrap{height:4px;background:rgba(255,255,255,.15);position:sticky;top:50px;z-index:199}
+.prog-fill{height:100%;background:#5BC8F5;transition:width .4s}
+
+/* ── STEPS ── */
+.step-nav{display:flex;overflow-x:auto;gap:5px;padding:9px 14px;background:#fff;border-bottom:1px solid var(--borda);scrollbar-width:none}
+.step-nav::-webkit-scrollbar{display:none}
+.step-btn{flex-shrink:0;padding:5px 11px;border-radius:14px;border:1.5px solid var(--borda);background:#fff;color:var(--cinza);font-size:.71rem;font-weight:700;cursor:pointer;touch-action:manipulation}
+.step-btn.active{background:var(--azul);color:#fff;border-color:var(--azul)}
+.step-btn.done{background:var(--verde-bg);color:var(--verde);border-color:var(--verde)}
+.step{display:none}.step.active{display:block;animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── CARDS / FIELDS ── */
+.wrap{padding:14px;max-width:640px;margin:0 auto}
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:16px;margin-bottom:14px}
+.sec-bar{background:var(--azul);color:#fff;padding:8px 13px;border-radius:8px;font-weight:700;font-size:.86rem;margin-bottom:11px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.77rem;font-weight:700;color:var(--azul);margin-bottom:4px}
+.req{color:#e53e3e}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:.9rem;background:#fafbfc;-webkit-appearance:none;appearance:none;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--azul2);background:#fff}
+.field textarea{min-height:75px;resize:vertical}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231F4E79' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.pill{padding:8px 14px;border:1.5px solid var(--borda);border-radius:18px;cursor:pointer;font-size:.81rem;font-weight:600;color:#555;background:#fafbfc;transition:all .2s;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.pill.p-sim{border-color:var(--verde);background:var(--verde-bg);color:var(--verde)}
+.pill.p-nao{border-color:var(--verm);background:var(--verm-bg);color:var(--verm)}
+.pill.p-par{border-color:#d69e2e;background:var(--amar-bg);color:var(--amar)}
+.pill.p-sel{border-color:var(--azul);background:var(--azul-bg);color:var(--azul)}
+.pill.p-alta{border-color:#e53e3e;background:#FFF0F0;color:#e53e3e}
+.pill.p-media{border-color:#d69e2e;background:var(--amar-bg);color:var(--amar)}
+.pill.p-baixa{border-color:var(--verde);background:var(--verde-bg);color:var(--verde)}
+
+/* ── CHECKLISTS ── */
+.chk-list{display:flex;flex-direction:column;gap:5px}
+.chk-item{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1.5px solid var(--borda);border-radius:8px;cursor:pointer;background:#fafbfc;transition:all .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.chk-item.on{border-color:var(--azul);background:var(--azul-bg)}
+.chk-box{width:19px;height:19px;border:2px solid var(--borda);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0;transition:all .2s}
+.chk-item.on .chk-box{background:var(--azul);border-color:var(--azul);color:#fff}
+.chk-item span{font-size:.84rem}
+
+/* ── BOTÕES ── */
+.btn{padding:12px 18px;border:none;border-radius:9px;font-size:.92rem;font-weight:700;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;justify-content:center;gap:6px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;font-family:inherit}
+.btn-primary{background:var(--azul);color:#fff}
+.btn-success{background:#1a7a3c;color:#fff}
+.btn-outline{background:#e8edf2;color:var(--azul)}
+.btn-print{background:#1a7a3c;color:#fff;font-size:1rem;padding:14px 28px}
+.btn-w{width:100%}
+.btn-sm{padding:7px 14px;font-size:.78rem;border-radius:7px}
+.nav-btns{display:flex;gap:9px;margin-top:4px;margin-bottom:16px}
+.nav-btns .btn{flex:1}
+
+/* ── MATERIAIS ── */
+.mat-item{border:1.5px solid var(--borda);border-radius:9px;padding:11px;margin-bottom:9px;position:relative}
+.mat-del{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--verm);font-size:1rem;cursor:pointer;touch-action:manipulation}
+
+/* ── SUCCESS / IMPRESSÃO ── */
+#form-success{display:none;padding:20px}
+.success-box{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:24px;text-align:center;margin-bottom:16px}
+.success-box .big{font-size:3.5rem;margin-bottom:8px}
+.success-box h2{color:var(--verde);font-size:1.3rem;margin-bottom:6px}
+.success-box p{color:var(--cinza);font-size:.85rem;margin-bottom:14px}
+.id-badge{display:inline-block;background:var(--azul-bg);color:var(--azul);font-size:1.3rem;font-weight:800;padding:8px 22px;border-radius:10px;margin:8px 0 16px}
+.print-preview{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:20px;margin-bottom:16px}
+.print-preview h3{color:var(--azul);font-size:.95rem;font-weight:800;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--azul-bg)}
+.print-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+
+/* ── LOGIN GESTÃO ── */
+.login-box{max-width:360px;margin:60px auto;background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:32px 24px;text-align:center}
+.login-box h2{color:var(--azul);font-size:1.2rem;margin-bottom:6px}
+.login-box p{color:var(--cinza);font-size:.85rem;margin-bottom:20px}
+.login-box input{width:100%;padding:11px 13px;border:1.5px solid var(--borda);border-radius:8px;font-size:.95rem;margin-bottom:10px;font-family:inherit}
+.login-err{color:var(--verm);font-size:.82rem;margin-bottom:8px;display:none}
+
+/* ── GESTÃO INTERNA ── */
+.gest-page{display:none;padding:14px;max-width:900px;margin:0 auto}
+.gest-page.active{display:block}
+.card-title{font-size:.92rem;font-weight:800;color:var(--azul);margin-bottom:11px}
+
+/* ── KPIs ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:var(--r);padding:13px;box-shadow:var(--sh);text-align:center;border-top:4px solid var(--azul)}
+.kpi.g{border-top-color:#276221}.kpi.r{border-top-color:#9C0006}.kpi.y{border-top-color:#d69e2e}
+.kpi .n{font-size:1.8rem;font-weight:800;color:var(--azul);line-height:1}
+.kpi.g .n{color:#276221}.kpi.r .n{color:#9C0006}.kpi.y .n{color:#7B5E00}
+.kpi .l{font-size:.7rem;color:var(--cinza);margin-top:3px;font-weight:600}
+
+/* ── CHARTS ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:560px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{background:#fff;border-radius:var(--r);padding:13px;box-shadow:var(--sh)}
+.chart-card h3{font-size:.82rem;color:var(--azul);font-weight:700;margin-bottom:9px}
+.chart-card canvas{max-height:180px}
+
+/* ── COORD ── */
+.coord-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.coord-card{background:#fff;border-radius:var(--r);padding:12px;box-shadow:var(--sh)}
+.coord-card h4{font-size:.85rem;color:var(--azul);font-weight:700;margin-bottom:7px}
+.cs{display:flex;justify-content:space-between;font-size:.76rem;padding:3px 0;border-bottom:1px solid var(--borda)}
+.cs:last-child{border:none}
+.cs span:last-child{font-weight:700;color:var(--azul)}
+
+/* ── FILTROS ── */
+.filters{background:#fff;border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh);margin-bottom:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:.71rem;font-weight:700;color:var(--azul)}
+.fg select,.fg input{padding:7px 10px;border:1.5px solid var(--borda);border-radius:7px;font-size:.8rem;min-width:100px;-webkit-appearance:none;appearance:none;font-family:inherit}
+
+/* ── TABELA ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th{background:var(--azul);color:#fff;padding:8px 9px;text-align:left;white-space:nowrap}
+td{padding:7px 9px;border-bottom:1px solid var(--borda);vertical-align:middle}
+tr:hover td{background:var(--azul-bg)}
+.badge{display:inline-block;padding:2px 7px;border-radius:12px;font-size:.69rem;font-weight:700}
+.b-sim{background:var(--verde-bg);color:var(--verde)}.b-nao{background:var(--verm-bg);color:var(--verm)}.b-par{background:var(--amar-bg);color:var(--amar)}
+.b-alta{background:var(--verm-bg);color:var(--verm)}.b-media{background:var(--amar-bg);color:var(--amar)}.b-baixa{background:var(--verde-bg);color:var(--verde)}
+.empty{text-align:center;padding:24px;color:#aaa;font-size:.85rem}
+
+/* ── CADASTROS ── */
+.cad-section{margin-bottom:20px}
+.cad-section h3{font-size:.92rem;font-weight:800;color:var(--azul);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--azul-bg)}
+.cad-form{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.cad-form input{flex:1;min-width:120px;padding:9px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:.86rem;font-family:inherit}
+.cad-list{display:flex;flex-direction:column;gap:6px}
+.cad-item{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:#f8fafc;border:1px solid var(--borda);border-radius:8px;font-size:.84rem}
+.cad-item-info{display:flex;flex-direction:column;gap:2px}
+.cad-item-nome{font-weight:700;color:#222}
+.cad-item-det{font-size:.74rem;color:var(--cinza)}
+.cad-del{background:none;border:none;color:var(--verm);cursor:pointer;font-size:.82rem;font-weight:700;touch-action:manipulation;padding:4px 8px}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--r);width:93%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.25)}
+.modal-hdr{background:var(--azul);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-radius:var(--r) var(--r) 0 0;position:sticky;top:0}
+.modal-hdr h2{font-size:.9rem}
+.modal-close{background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;touch-action:manipulation}
+.modal-body{padding:16px}
+.modal-foot{padding:10px 16px;border-top:1px solid var(--borda);display:flex;gap:8px;justify-content:flex-end}
+
+/* ── RELATÓRIO ── */
+.rel-sec{margin-bottom:13px}
+.rel-bar{background:var(--azul);color:#fff;padding:6px 11px;border-radius:6px;font-size:.81rem;font-weight:700;margin-bottom:6px}
+.rel-row{display:flex;gap:8px;margin-bottom:4px;font-size:.8rem}
+.rel-lbl{font-weight:700;color:var(--azul);min-width:155px;flex-shrink:0}
+.rel-val{color:#333}
+.ok{color:var(--verde);font-weight:700}.no{color:var(--verm);font-weight:700}.pa{color:var(--amar);font-weight:700}
+
+/* ── PRINT ── */
+@media print{
+  #tela-inicial,#modulo-form .topbar,#modulo-form .prog-wrap,#modulo-form .step-nav,
+  #modulo-form .nav-btns,#modulo-form .success-box,#modulo-form .print-actions,
+  #modulo-gest .topbar,#modulo-gest .filters,#modulo-gest .kpi-grid,
+  #modulo-gest .chart-grid,#modulo-gest .coord-grid,#modulo-gest .tbl-wrap,
+  .modal-hdr,.modal-foot,.nav-tabs{display:none!important}
+  .overlay{position:static!important;background:none!important;display:block!important}
+  .modal{width:100%!important;max-height:none!important;box-shadow:none!important}
+  #form-success{display:block!important}
+  .print-preview{box-shadow:none!important;padding:0!important}
+  body{background:#fff!important}
+  .rel-bar{background:#1F4E79!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════════
+     TELA INICIAL
+══════════════════════════════════════════════════════ -->
+<div id="tela-inicial">
+<div class="logo-area">
+<div class="logo-icon">🏢</div>
+<h1>Grupo Fibravit</h1>
+<p>Sistema de Visitas Operacionais</p>
+</div>
+<div class="cards-grid">
+<div class="home-card card-form" id="card-formulario">
+<div class="card-icon">📝</div>
+<h2>Formulário de Visita</h2>
+<p>Preencha o relatório de visita e imprima ao finalizar</p>
+<span class="card-badge">✅ Acesso livre</span>
+</div>
+<div class="home-card card-gest" id="card-gestao">
+<div class="card-icon">📊</div>
+<h2>Gestão de Visitas</h2>
+<p>Dashboard, KPIs, histórico e cadastros do sistema</p>
+<span class="card-badge">🔐 Requer login</span>
+</div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════════════
+     MÓDULO: FORMULÁRIO
+══════════════════════════════════════════════════════ -->
+<div class="modulo" id="modulo-form">
+<div class="topbar">
+<div class="topbar-left">
+<button class="btn-home" id="btn-home-form">🏠 Início</button>
+<h1>📝 Formulário de Visita</h1>
+</div>
+</div>
+<div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="step-nav" id="step-nav">
+<button class="step-btn active" id="sbtn0">1. Identificação</button>
+<button class="step-btn" id="sbtn1">2. Contatos</button>
+<button class="step-btn" id="sbtn2">3. Serviços</button>
+<button class="step-btn" id="sbtn3">4. Materiais</button>
+<button class="step-btn" id="sbtn4">5. Pendências</button>
+<button class="step-btn" id="sbtn5">6. Avaliação</button>
+</div>
+<div class="wrap">
+<!-- STEP 1 -->
+<div class="step active" id="s0">
+<div class="card">
+<div class="sec-bar">📍 1. Identificação da Visita</div>
+<div class="field"><label>Empresa <span class="req">*</span></label>
+<select id="f-empresa"><option value="">Selecione...</option><option>Fibravit</option><option>Service</option></select>
+</div>
+<div class="field"><label>Responsável pela Visita <span class="req">*</span></label>
+<select id="f-responsavel"><option value="">Carregando...</option></select>
+</div>
+<div class="field" id="field-funcao" style="display:none">
+<label>Função</label>
+<input id="f-funcao" readonly="" style="background:#f0f4f8;color:var(--cinza)" type="text"/>
+</div>
+<div class="row2">
+<div class="field"><label>Data <span class="req">*</span></label><input id="f-data" type="date"/></div>
+<div class="field"><label>Horário <span class="req">*</span></label><input id="f-hora" type="time"/></div>
+</div>
+<div class="field"><label>Equipe presente</label><input id="f-equipe" placeholder="Outros membros presentes" type="text"/></div>
+<div class="field"><label>Cliente / Evento <span class="req">*</span></label><input id="f-cliente" placeholder="Ex: Sebrae / Feira João Neiva" type="text"/></div>
+<div class="row2">
+<div class="field"><label>Local / Cidade <span class="req">*</span></label><input id="f-local" placeholder="Ex: João Neiva - ES" type="text"/></div>
+<div class="field"><label>Nº Contrato / OS</label><input id="f-os" placeholder="Opcional" type="text"/></div>
+</div>
+<div class="field"><label>Tipo de visita <span class="req">*</span></label>
+<select id="f-tipo"><option value="">Carregando...</option></select>
+</div>
+<div class="field"><label>Objetivo da visita <span class="req">*</span></label>
+<textarea id="f-objetivo" placeholder="Descreva o motivo e o que deveria ser feito..."></textarea>
+</div>
+</div>
+<div class="nav-btns"><button class="btn btn-primary" id="btn-next-0">Próximo ›</button></div>
+</div>
+<!-- STEP 2 -->
+<div class="step" id="s1">
+<div class="card">
+<div class="sec-bar">🤝 2. Contatos com o Cliente</div>
+<div class="field"><label>Houve contato com o cliente? <span class="req">*</span></label>
+<div class="pills"><div class="pill" id="pill-contato-sim">✅ Sim</div><div class="pill" id="pill-contato-nao">❌ Não</div></div>
+</div>
+<div class="field" id="fd-pessoas"><label>Pessoas contatadas</label>
+<textarea id="f-pessoas" placeholder="Nome — Cargo / Empresa — Assunto tratado
+(uma por linha)"></textarea>
+</div>
+<div class="field" id="fd-motivo" style="display:none"><label>Motivo de não ter havido contato</label>
+<textarea id="f-motivo" placeholder="Ex: Feira ainda não havia aberto..."></textarea>
+</div>
+<hr style="border:none;border-top:1px solid var(--borda);margin:11px 0"/>
+<div class="field"><label>Próximo contato agendado?</label>
+<div class="pills"><div class="pill" id="pill-prox-sim">Sim</div><div class="pill" id="pill-prox-nao">Não</div></div>
+</div>
+<div class="field" id="fd-prox" style="display:none"><label>Data / hora</label><input id="f-prox-data" type="datetime-local"/></div>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" id="btn-prev-1">‹ Anterior</button>
+<button class="btn btn-primary" id="btn-next-1">Próximo ›</button>
+</div>
+</div>
+<!-- STEP 3 -->
+<div class="step" id="s2">
+<div class="card">
+<div class="sec-bar">🔧 3. Serviços e Atividades</div>
+<div class="field"><label>Serviços executados (toque para marcar)</label>
+<div class="chk-list" id="chk-serv"></div>
+</div>
+<div class="field"><label>Descrição detalhada / manutenções</label>
+<textarea id="f-desc" placeholder="Peças trocadas, procedimentos, tempo gasto..." style="min-height:90px"></textarea>
+</div>
+<div class="field"><label>Registro no CheckMob? <span class="req">*</span></label>
+<div class="pills"><div class="pill" id="pill-chk-sim">✅ Sim</div><div class="pill" id="pill-chk-nao">❌ Não</div><div class="pill" id="pill-chk-par">⚠️ Parcial</div></div>
+</div>
+<div class="field"><label>Fotos / evidências? <span class="req">*</span></label>
+<div class="pills"><div class="pill" id="pill-foto-sim">✅ Sim</div><div class="pill" id="pill-foto-nao">❌ Não</div><div class="pill" id="pill-foto-na">N/A</div></div>
+</div>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" id="btn-prev-2">‹ Anterior</button>
+<button class="btn btn-primary" id="btn-next-2">Próximo ›</button>
+</div>
+</div>
+<!-- STEP 4 -->
+<div class="step" id="s3">
+<div class="card">
+<div class="sec-bar">📦 4. Materiais Entregues</div>
+<p style="font-size:.78rem;color:#888;margin-bottom:11px">Registre todos os materiais deixados no local.</p>
+<div id="mat-list">
+<div class="mat-item">
+<div class="row2">
+<div class="field"><label>Material / Item</label><input class="mn" placeholder="Ex: Papel toalha" type="text"/></div>
+<div class="field"><label>Qtd. entregue</label><input class="mq" placeholder="Ex: 5 rolos" type="text"/></div>
+</div>
+</div>
+</div>
+<button id="btn-add-mat" style="width:100%;padding:9px;border:2px dashed var(--azul2);border-radius:8px;background:var(--azul-bg);color:var(--azul);font-weight:700;font-size:.84rem;cursor:pointer;margin-bottom:11px;touch-action:manipulation;font-family:inherit" type="button">+ Adicionar material</button>
+<div class="field"><label>Recibo / NF emitida?</label>
+<div class="pills"><div class="pill" id="pill-rec-sim">✅ Sim</div><div class="pill" id="pill-rec-nao">❌ Não</div><div class="pill" id="pill-rec-na">N/A</div></div>
+</div>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" id="btn-prev-3">‹ Anterior</button>
+<button class="btn btn-primary" id="btn-next-3">Próximo ›</button>
+</div>
+</div>
+<!-- STEP 5 -->
+<div class="step" id="s4">
+<div class="card">
+<div class="sec-bar">⚠️ 5. Pendências</div>
+<div class="field"><label>Há itens pendentes?</label>
+<div class="pills"><div class="pill" id="pill-pend-sim">⚠️ Sim</div><div class="pill" id="pill-pend-nao">✅ Não</div></div>
+</div>
+<div id="pend-det" style="display:none">
+<div class="field"><label>Descrição das pendências</label>
+<textarea id="f-pend" placeholder="Descreva detalhadamente..." style="min-height:90px"></textarea>
+</div>
+<div class="field"><label>Prioridade</label>
+<div class="pills"><div class="pill" id="pill-prior-alta">🔴 Alta</div><div class="pill" id="pill-prior-media">🟡 Média</div><div class="pill" id="pill-prior-baixa">🟢 Baixa</div></div>
+</div>
+<div class="row2">
+<div class="field"><label>Responsável</label><input id="f-resp" placeholder="Nome" type="text"/></div>
+<div class="field"><label>Prazo</label><input id="f-prazo" type="date"/></div>
+</div>
+</div>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" id="btn-prev-4">‹ Anterior</button>
+<button class="btn btn-primary" id="btn-next-4">Próximo ›</button>
+</div>
+</div>
+<!-- STEP 6 -->
+<div class="step" id="s5">
+<div class="card">
+<div class="sec-bar">📊 6. Avaliação</div>
+<div class="field"><label>A visita atingiu seus objetivos? <span class="req">*</span></label>
+<div class="pills"><div class="pill" id="pill-obj-tot">✅ Totalmente</div><div class="pill" id="pill-obj-par">⚠️ Parcialmente</div><div class="pill" id="pill-obj-nao">❌ Não</div></div>
+</div>
+<div class="field"><label>Satisfação do cliente</label>
+<div class="pills"><div class="pill" id="pill-sat-ot">😄 Ótimo</div><div class="pill" id="pill-sat-bom">🙂 Bom</div><div class="pill" id="pill-sat-reg">😐 Regular</div><div class="pill" id="pill-sat-ruim">😞 Ruim</div><div class="pill" id="pill-sat-na">N/A</div></div>
+</div>
+<div class="field"><label>Observações gerais</label>
+<textarea id="f-obs" placeholder="Situações incomuns, oportunidades, feedbacks..." style="min-height:100px"></textarea>
+</div>
+<p style="font-size:.76rem;color:#888;background:var(--amar-bg);padding:8px 11px;border-radius:8px;margin-top:4px">
+        ⚠️ Verifique tudo antes de enviar.
+      </p>
+</div>
+<div class="nav-btns">
+<button class="btn btn-outline" id="btn-prev-5">‹ Anterior</button>
+<button class="btn btn-success" id="btn-submit" style="flex:2">✅ Enviar Relatório</button>
+</div>
+</div>
+<!-- SUCESSO + IMPRESSÃO -->
+<div id="form-success">
+<div class="success-box">
+<div class="big">✅</div>
+<h2>Relatório enviado com sucesso!</h2>
+<p>Os dados foram salvos no banco de dados.</p>
+<div class="id-badge">ID: <span id="suc-id">—</span></div>
+</div>
+<div class="print-preview" id="print-area"></div>
+<div class="print-actions">
+<button class="btn btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+<button class="btn btn-outline" onclick="location.reload()">+ Nova Visita</button>
+</div>
+</div>
+</div><!-- /wrap -->
+</div><!-- /modulo-form -->
+<!-- ══════════════════════════════════════════════════════
+     MÓDULO: GESTÃO
+══════════════════════════════════════════════════════ -->
+<div class="modulo" id="modulo-gest">
+<div class="topbar">
+<div class="topbar-left">
+<button class="btn-home" id="btn-home-gest">🏠 Início</button>
+<h1>📊 Gestão de Visitas</h1>
+</div>
+<div class="nav-tabs" id="gest-tabs" style="display:none">
+<button class="nav-tab active" id="gtab-dash" onclick="showGestPage('dash')">📊 Dashboard</button>
+<button class="nav-tab" id="gtab-hist" onclick="showGestPage('hist')">📋 Histórico</button>
+<button class="nav-tab" id="gtab-cad" onclick="showGestPage('cad')">⚙️ Cadastros</button>
+<button class="nav-tab" id="gtab-sair" onclick="fazerLogout()" style="border-color:rgba(255,100,100,.4);color:rgba(255,150,150,.9)">Sair</button>
+</div>
+</div>
+<!-- LOGIN -->
+<div id="gest-login">
+<div class="login-box">
+<div style="font-size:2.5rem;margin-bottom:10px">🔐</div>
+<h2>Área de Gestão</h2>
+<p>Digite suas credenciais para acessar</p>
+<input autocomplete="username" id="login-user" placeholder="Usuário" type="text"/>
+<input autocomplete="current-password" id="login-pass" placeholder="Senha" type="password"/>
+<div class="login-err" id="login-err">❌ Usuário ou senha incorretos</div>
+<button class="btn btn-primary btn-w" id="btn-login">Entrar</button>
+</div>
+</div>
+<!-- DASHBOARD -->
+<div class="gest-page" id="gpage-dash">
+<div style="padding:14px;max-width:900px;margin:0 auto">
+<div class="filters">
+<div class="fg"><label>Empresa</label>
+<select id="df-emp"><option value="">Todas</option><option>Fibravit</option><option>Service</option></select>
+</div>
+<div class="fg"><label>Responsável</label><select id="df-resp"><option value="">Todos</option></select></div>
+<div class="fg"><label>De</label><input id="df-de" type="date"/></div>
+<div class="fg"><label>Até</label><input id="df-ate" type="date"/></div>
+<button class="btn btn-primary btn-sm" id="btn-filtrar">🔍 Filtrar</button>
+<button class="btn btn-outline btn-sm" id="btn-limpar">✕ Limpar</button>
+<button class="btn btn-sm" id="btn-atualizar" style="background:#276221;color:#fff">🔄 Atualizar</button>
+</div>
+<div class="kpi-grid" id="kpi-grid"></div>
+<div class="chart-grid">
+<div class="chart-card"><h3>📅 Visitas por Mês</h3><canvas id="ch-mes"></canvas></div>
+<div class="chart-card"><h3>🔧 Tipos de Visita</h3><canvas id="ch-tipo"></canvas></div>
+<div class="chart-card"><h3>✅ CheckMob</h3><canvas id="ch-chk"></canvas></div>
+<div class="chart-card"><h3>🎯 Objetivos</h3><canvas id="ch-obj"></canvas></div>
+</div>
+<div class="card">
+<div class="card-title">👤 Desempenho por Responsável</div>
+<div class="coord-grid" id="coord-grid"></div>
+</div>
+</div>
+</div>
+<!-- HISTÓRICO -->
+<div class="gest-page" id="gpage-hist">
+<div style="padding:14px;max-width:900px;margin:0 auto">
+<div class="filters">
+<div class="fg"><label>Cliente</label><input id="hf-cli" placeholder="Buscar..." style="min-width:120px" type="text"/></div>
+<button class="btn btn-primary btn-sm" id="btn-hfiltrar">🔍 Buscar</button>
+<button class="btn btn-outline btn-sm" id="btn-hlimpar">✕ Limpar</button>
+</div>
+<div class="card">
+<div class="card-title">📋 Histórico de Visitas <span id="cnt" style="font-size:.74rem;color:#aaa;font-weight:400"></span></div>
+<div class="tbl-wrap">
+<table>
+<thead><tr>
+<th>ID</th><th>Data</th><th>Empresa</th><th>Responsável</th><th>Cliente</th>
+<th>Tipo</th><th>CheckMob</th><th>Pendências</th><th>Objetivos</th><th></th>
+</tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+<div class="empty" id="empty" style="display:none">Nenhuma visita encontrada.</div>
+</div>
+</div>
+</div>
+</div>
+<!-- CADASTROS -->
+<div class="gest-page" id="gpage-cad">
+<div style="padding:14px;max-width:700px;margin:0 auto">
+<div class="card cad-section">
+<h3>👤 Responsáveis pela Visita</h3>
+<div class="cad-form">
+<input id="cad-resp-nome" placeholder="Nome completo" type="text"/>
+<input id="cad-resp-func" placeholder="Função (ex: Técnico)" type="text"/>
+<button class="btn btn-primary btn-sm" id="btn-add-resp">+ Adicionar</button>
+</div>
+<div class="cad-list" id="list-responsaveis"></div>
+</div>
+<div class="card cad-section">
+<h3>🔧 Tipos de Visita</h3>
+<div class="cad-form">
+<input id="cad-tipo-nome" placeholder="Nome do tipo de visita" type="text"/>
+<button class="btn btn-primary btn-sm" id="btn-add-tipo">+ Adicionar</button>
+</div>
+<div class="cad-list" id="list-tipos"></div>
+</div>
+<div class="card cad-section">
+<h3>✅ Serviços e Atividades</h3>
+<div class="cad-form">
+<input id="cad-serv-nome" placeholder="Nome do serviço / atividade" type="text"/>
+<button class="btn btn-primary btn-sm" id="btn-add-serv">+ Adicionar</button>
+</div>
+<div class="cad-list" id="list-servicos"></div>
+</div>
+</div>
+</div>
+</div><!-- /modulo-gest -->
+<!-- Modal Relatório -->
+<div class="overlay" id="modal">
+<div class="modal">
+<div class="modal-hdr">
+<h2>🖨️ Relatório de Visita</h2>
+<button class="modal-close" id="btn-close-modal">✕</button>
+</div>
+<div class="modal-body" id="modal-body"></div>
+<div class="modal-foot">
+<button class="btn btn-outline btn-sm" id="btn-fechar-modal">Fechar</button>
+<button class="btn btn-sm" id="btn-imprimir" style="background:#1a7a3c;color:#fff">🖨️ Imprimir / PDF</button>
+</div>
+</div>
+</div>
+<script>
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+var API_URL    = 'https://script.google.com/macros/s/AKfycbyO4C24JK80Z7EwEiTBP_ZqZrmfWRrnZZp31oZJ65cDbZvxvk93pq60Hw7L0vqUpYFy/exec';
+var ADMIN_USER = 'admin';
+var ADMIN_PASS = 'admin123';
+
+// ══════════════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════════════
+var pillValues  = {};
+var chkValues   = [];
+var chkLabels   = [];
+var allData     = [];
+var cadastros   = { responsaveis:[], tipos:[], servicos:[] };
+var charts      = {};
+var adminLogado = false;
+var ultimaVisita = null;
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  // Data/hora
+  var now = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  document.getElementById('f-data').value = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  document.getElementById('f-hora').value = pad(now.getHours())+':'+pad(now.getMinutes());
+
+  // Tela inicial
+  document.getElementById('card-formulario').addEventListener('click', function(){ abrirModulo('form'); });
+  document.getElementById('card-gestao').addEventListener('click', function(){ abrirModulo('gest'); });
+  document.getElementById('btn-home-form').addEventListener('click', function(){ voltarInicio(); });
+  document.getElementById('btn-home-gest').addEventListener('click', function(){ voltarInicio(); });
+
+  // Formulário — navegação
+  document.getElementById('btn-next-0').addEventListener('click', function(){ doNext(0); });
+  document.getElementById('btn-next-1').addEventListener('click', function(){ doNext(1); });
+  document.getElementById('btn-next-2').addEventListener('click', function(){ doNext(2); });
+  document.getElementById('btn-next-3').addEventListener('click', function(){ doNext(3); });
+  document.getElementById('btn-next-4').addEventListener('click', function(){ doNext(4); });
+  document.getElementById('btn-prev-1').addEventListener('click', function(){ goStep(0); });
+  document.getElementById('btn-prev-2').addEventListener('click', function(){ goStep(1); });
+  document.getElementById('btn-prev-3').addEventListener('click', function(){ goStep(2); });
+  document.getElementById('btn-prev-4').addEventListener('click', function(){ goStep(3); });
+  document.getElementById('btn-prev-5').addEventListener('click', function(){ goStep(4); });
+  document.getElementById('btn-submit').addEventListener('click', submitForm);
+  document.getElementById('btn-add-mat').addEventListener('click', addMat);
+
+  // Pills
+  setupPill('pill-contato-sim','contato','Sim','p-sim',function(){ document.getElementById('fd-pessoas').style.display='block'; document.getElementById('fd-motivo').style.display='none'; });
+  setupPill('pill-contato-nao','contato','Não','p-nao',function(){ document.getElementById('fd-pessoas').style.display='none'; document.getElementById('fd-motivo').style.display='block'; });
+  setupPill('pill-prox-sim','proximo','Sim','p-sim',function(){ document.getElementById('fd-prox').style.display='block'; });
+  setupPill('pill-prox-nao','proximo','Não','p-nao',function(){ document.getElementById('fd-prox').style.display='none'; });
+  setupPill('pill-chk-sim','checkmob','Sim','p-sim',null);
+  setupPill('pill-chk-nao','checkmob','Não','p-nao',null);
+  setupPill('pill-chk-par','checkmob','Parcial','p-par',null);
+  setupPill('pill-foto-sim','fotos','Sim','p-sim',null);
+  setupPill('pill-foto-nao','fotos','Não','p-nao',null);
+  setupPill('pill-foto-na','fotos','N/A','p-par',null);
+  setupPill('pill-rec-sim','recibo','Sim','p-sim',null);
+  setupPill('pill-rec-nao','recibo','Não','p-nao',null);
+  setupPill('pill-rec-na','recibo','N/A','p-par',null);
+  setupPill('pill-pend-sim','tem_pend','Sim','p-nao',function(){ document.getElementById('pend-det').style.display='block'; });
+  setupPill('pill-pend-nao','tem_pend','Não','p-sim',function(){ document.getElementById('pend-det').style.display='none'; });
+  setupPill('pill-prior-alta','prior','Alta','p-alta',null);
+  setupPill('pill-prior-media','prior','Média','p-media',null);
+  setupPill('pill-prior-baixa','prior','Baixa','p-baixa',null);
+  setupPill('pill-obj-tot','obj','Totalmente','p-sim',null);
+  setupPill('pill-obj-par','obj','Parcialmente','p-par',null);
+  setupPill('pill-obj-nao','obj','Não','p-nao',null);
+  setupPill('pill-sat-ot','sat','Ótimo','p-sim',null);
+  setupPill('pill-sat-bom','sat','Bom','p-sim',null);
+  setupPill('pill-sat-reg','sat','Regular','p-par',null);
+  setupPill('pill-sat-ruim','sat','Ruim','p-nao',null);
+  setupPill('pill-sat-na','sat','N/A','p-sel',null);
+
+  // Responsável → função
+  document.getElementById('f-responsavel').addEventListener('change', function(){
+    var nome = this.value;
+    var resp = cadastros.responsaveis.find(function(r){ return r.nome===nome; });
+    if(resp && resp.detalhe){ document.getElementById('f-funcao').value=resp.detalhe; document.getElementById('field-funcao').style.display='block'; }
+    else { document.getElementById('f-funcao').value=''; document.getElementById('field-funcao').style.display='none'; }
+  });
+
+  // Gestão — login
+  document.getElementById('btn-login').addEventListener('click', fazerLogin);
+  document.getElementById('login-pass').addEventListener('keypress', function(e){ if(e.key==='Enter') fazerLogin(); });
+
+  // Gestão — dashboard
+  document.getElementById('btn-filtrar').addEventListener('click', applyFilters);
+  document.getElementById('btn-limpar').addEventListener('click', clearFilters);
+  document.getElementById('btn-atualizar').addEventListener('click', loadDash);
+  document.getElementById('btn-hfiltrar').addEventListener('click', applyHistFilters);
+  document.getElementById('btn-hlimpar').addEventListener('click', function(){ document.getElementById('hf-cli').value=''; renderTable(allData); });
+
+  // Modal
+  document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+  document.getElementById('btn-fechar-modal').addEventListener('click', closeModal);
+  document.getElementById('btn-imprimir').addEventListener('click', function(){ window.print(); });
+
+  // Cadastros
+  document.getElementById('btn-add-resp').addEventListener('click', function(){ adicionarCadastro('RESPONSAVEL'); });
+  document.getElementById('btn-add-tipo').addEventListener('click', function(){ adicionarCadastro('TIPO_VISITA'); });
+  document.getElementById('btn-add-serv').addEventListener('click', function(){ adicionarCadastro('SERVICO'); });
+
+  // Carregar cadastros
+  carregarCadastros();
+});
+
+// ══════════════════════════════════════════════════════════════
+// NAVEGAÇÃO PRINCIPAL
+// ══════════════════════════════════════════════════════════════
+function abrirModulo(m) {
+  document.getElementById('tela-inicial').style.display = 'none';
+  document.getElementById('modulo-form').classList.remove('active');
+  document.getElementById('modulo-gest').classList.remove('active');
+  document.getElementById('modulo-'+m).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function voltarInicio() {
+  document.getElementById('modulo-form').classList.remove('active');
+  document.getElementById('modulo-gest').classList.remove('active');
+  document.getElementById('tela-inicial').style.display = 'flex';
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════════════════════════════════════
+// CADASTROS
+// ══════════════════════════════════════════════════════════════
+function carregarCadastros() {
+  fetch(API_URL+'?action=cadastros')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      cadastros = data;
+      popularSelects();
+      if(adminLogado) renderCadastros();
+    })
+    .catch(function(){
+      cadastros = {
+        responsaveis:[{nome:'Davi Lobato',detalhe:'Coordenador'},{nome:'Jhully Prado',detalhe:'Coordenadora'},{nome:'Gabriel Daher Regio',detalhe:'Coordenador'},{nome:'José Afonso Altoé',detalhe:'Coordenador'}],
+        tipos:[{nome:'Manutenção'},{nome:'Abastecimento'},{nome:'Manutenção + Abastecimento'},{nome:'Visita comercial / Relacionamento'},{nome:'Evento / Feira'},{nome:'Inspeção geral'}],
+        servicos:[{nome:'Abastecimento de água'},{nome:'Sucção / esgotamento'},{nome:'Manutenção'},{nome:'Limpeza geral'},{nome:'Entrega de materiais'},{nome:'Inspeção geral'}]
+      };
+      popularSelects();
+    });
+}
+
+function popularSelects() {
+  // Responsáveis
+  var sel = document.getElementById('f-responsavel');
+  sel.innerHTML = '<option value="">Selecione...</option>';
+  cadastros.responsaveis.forEach(function(r){
+    var o=document.createElement('option'); o.value=r.nome; o.textContent=r.nome+(r.detalhe?' — '+r.detalhe:''); sel.appendChild(o);
+  });
+  // Filtro responsável
+  var dfr = document.getElementById('df-resp');
+  dfr.innerHTML = '<option value="">Todos</option>';
+  cadastros.responsaveis.forEach(function(r){
+    var o=document.createElement('option'); o.value=r.nome; o.textContent=r.nome; dfr.appendChild(o);
+  });
+  // Tipos
+  var selt = document.getElementById('f-tipo');
+  selt.innerHTML = '<option value="">Selecione...</option>';
+  cadastros.tipos.forEach(function(t){
+    var o=document.createElement('option'); o.value=t.nome; o.textContent=t.nome; selt.appendChild(o);
+  });
+  // Checklists
+  var container = document.getElementById('chk-serv');
+  container.innerHTML = '';
+  chkValues=[]; chkLabels=[];
+  cadastros.servicos.forEach(function(s,i){
+    chkValues.push(false); chkLabels.push(s.nome);
+    var div=document.createElement('div'); div.className='chk-item'; div.id='chk'+i;
+    div.innerHTML='<div class="chk-box">✓</div><span>'+s.nome+'</span>';
+    div.addEventListener('click',(function(idx){ return function(){ toggleChk(idx); }; })(i));
+    container.appendChild(div);
+  });
+}
+
+function renderCadastros() {
+  renderListaCad('list-responsaveis', cadastros.responsaveis, 'RESPONSAVEL', true);
+  renderListaCad('list-tipos', cadastros.tipos, 'TIPO_VISITA', false);
+  renderListaCad('list-servicos', cadastros.servicos, 'SERVICO', false);
+}
+
+function renderListaCad(id, lista, tipo, temDet) {
+  var c = document.getElementById(id);
+  if(!lista||!lista.length){ c.innerHTML='<p style="color:#aaa;font-size:.82rem;padding:8px">Nenhum cadastro.</p>'; return; }
+  c.innerHTML = lista.map(function(item){
+    return '<div class="cad-item"><div class="cad-item-info"><span class="cad-item-nome">'+item.nome+'</span>'+(temDet&&item.detalhe?'<span class="cad-item-det">'+item.detalhe+'</span>':'')+'</div><button class="cad-del" onclick="excluirCadastro(\''+tipo+'\',\''+item.nome+'\')">✕ Remover</button></div>';
+  }).join('');
+}
+
+function adicionarCadastro(tipo) {
+  var nome='', detalhe='';
+  if(tipo==='RESPONSAVEL'){ nome=document.getElementById('cad-resp-nome').value.trim(); detalhe=document.getElementById('cad-resp-func').value.trim(); if(!nome){alert('Digite o nome.');return;} }
+  else if(tipo==='TIPO_VISITA'){ nome=document.getElementById('cad-tipo-nome').value.trim(); if(!nome){alert('Digite o tipo.');return;} }
+  else if(tipo==='SERVICO'){ nome=document.getElementById('cad-serv-nome').value.trim(); if(!nome){alert('Digite o serviço.');return;} }
+  var item={nome:nome,detalhe:detalhe};
+  if(tipo==='RESPONSAVEL') cadastros.responsaveis.push(item);
+  else if(tipo==='TIPO_VISITA') cadastros.tipos.push(item);
+  else if(tipo==='SERVICO') cadastros.servicos.push(item);
+  popularSelects(); renderCadastros();
+  if(tipo==='RESPONSAVEL'){document.getElementById('cad-resp-nome').value='';document.getElementById('cad-resp-func').value='';}
+  else if(tipo==='TIPO_VISITA') document.getElementById('cad-tipo-nome').value='';
+  else document.getElementById('cad-serv-nome').value='';
+  fetch(API_URL,{method:'POST',body:JSON.stringify({action:'cadastro',tipo:tipo,nome:nome,detalhe:detalhe})}).catch(function(){});
+}
+
+function excluirCadastro(tipo, nome) {
+  if(!confirm('Remover "'+nome+'"?')) return;
+  if(tipo==='RESPONSAVEL') cadastros.responsaveis=cadastros.responsaveis.filter(function(r){return r.nome!==nome;});
+  else if(tipo==='TIPO_VISITA') cadastros.tipos=cadastros.tipos.filter(function(t){return t.nome!==nome;});
+  else if(tipo==='SERVICO') cadastros.servicos=cadastros.servicos.filter(function(s){return s.nome!==nome;});
+  popularSelects(); renderCadastros();
+  fetch(API_URL,{method:'POST',body:JSON.stringify({action:'excluir_cadastro',tipo:tipo,nome:nome})}).catch(function(){});
+}
+
+// ══════════════════════════════════════════════════════════════
+// HELPERS FORMULÁRIO
+// ══════════════════════════════════════════════════════════════
+function setupPill(id,key,val,cls,cb){
+  var el=document.getElementById(id); if(!el) return;
+  el.addEventListener('click',function(){
+    pillValues[key]=val;
+    el.parentElement.querySelectorAll('.pill').forEach(function(p){p.className='pill';});
+    el.classList.add(cls);
+    if(cb) cb();
+  });
+}
+
+function toggleChk(idx){ chkValues[idx]=!chkValues[idx]; var el=document.getElementById('chk'+idx); if(el) el.classList.toggle('on',chkValues[idx]); }
+
+function getServicos(){ var c=[]; for(var i=0;i<chkValues.length;i++){if(chkValues[i])c.push(chkLabels[i]);} var d=document.getElementById('f-desc').value.trim(); var r=c.join(', '); if(d) r+=(r?' | ':'')+d; return r; }
+
+function getMateriais(){ var items=document.querySelectorAll('.mat-item'),r=[]; for(var i=0;i<items.length;i++){var n=items[i].querySelector('.mn').value.trim(),q=items[i].querySelector('.mq').value.trim(); if(n) r.push(n+(q?' ('+q+')':'')); } return r.join('; '); }
+
+function addMat(){ var d=document.createElement('div'); d.className='mat-item'; d.innerHTML='<button class="mat-del" type="button">✕</button><div class="row2"><div class="field"><label>Material / Item</label><input type="text" class="mn" placeholder="Ex: Papel higiênico"/></div><div class="field"><label>Qtd. entregue</label><input type="text" class="mq" placeholder="Ex: 10 rolos"/></div></div>'; d.querySelector('.mat-del').addEventListener('click',function(){d.remove();}); document.getElementById('mat-list').appendChild(d); }
+
+// ══════════════════════════════════════════════════════════════
+// NAVEGAÇÃO FORMULÁRIO
+// ══════════════════════════════════════════════════════════════
+function goStep(n){
+  for(var i=0;i<6;i++){document.getElementById('s'+i).classList.remove('active');document.getElementById('sbtn'+i).classList.remove('active');}
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('sbtn'+n).classList.add('active');
+  document.getElementById('prog').style.width=(n/5*100)+'%';
+  document.getElementById('sbtn'+n).scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  window.scrollTo(0,0);
+}
+
+function doNext(n){
+  if(n===0){
+    var ids=['f-empresa','f-responsavel','f-data','f-hora','f-cliente','f-local','f-tipo','f-objetivo'];
+    for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]); if(!el.value.trim()){alert('Preencha todos os campos obrigatórios (*).'); el.focus(); return;}}
+  }
+  if(n===1&&!pillValues['contato']){alert('Informe se houve contato com o cliente.');return;}
+  if(n===2){if(!pillValues['checkmob']){alert('Informe o status do CheckMob.');return;} if(!pillValues['fotos']){alert('Informe o status das fotos.');return;}}
+  if(n===5&&!pillValues['obj']){alert('Informe se a visita atingiu seus objetivos.');return;}
+  var sb=document.getElementById('sbtn'+n); sb.classList.remove('active'); sb.classList.add('done');
+  goStep(n+1);
+}
+
+// ══════════════════════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════════════════════
+function submitForm(){
+  var btn=document.getElementById('btn-submit');
+  btn.disabled=true; btn.textContent='⏳ Enviando...';
+  var pend=pillValues['tem_pend']==='Sim';
+  var respNome=document.getElementById('f-responsavel').value;
+  var respFunc=document.getElementById('f-funcao').value;
+  var payload={
+    data_visita:document.getElementById('f-data').value,
+    horario:document.getElementById('f-hora').value,
+    empresa:document.getElementById('f-empresa').value,
+    responsavel:respNome, funcao:respFunc,
+    equipe:document.getElementById('f-equipe').value,
+    cliente:document.getElementById('f-cliente').value,
+    local:document.getElementById('f-local').value,
+    contrato:document.getElementById('f-os').value,
+    tipo_visita:document.getElementById('f-tipo').value,
+    objetivo:document.getElementById('f-objetivo').value,
+    contato_cliente:pillValues['contato']||'',
+    pessoas_contatadas:pillValues['contato']==='Sim'?document.getElementById('f-pessoas').value:document.getElementById('f-motivo').value,
+    proximo_contato:document.getElementById('f-prox-data').value||'',
+    servicos:getServicos(),
+    checkmob:pillValues['checkmob']||'',
+    fotos:pillValues['fotos']||'',
+    materiais:getMateriais(),
+    recibo:pillValues['recibo']||'',
+    pendencias:pend?document.getElementById('f-pend').value:'',
+    prioridade:pend?(pillValues['prior']||''):'',
+    responsavel_pend:pend?document.getElementById('f-resp').value:'',
+    prazo_pend:pend?document.getElementById('f-prazo').value:'',
+    objetivos_atingidos:pillValues['obj']||'',
+    satisfacao:pillValues['sat']||'',
+    observacoes:document.getElementById('f-obs').value
+  };
+  ultimaVisita = payload;
+  fetch(API_URL,{method:'POST',body:JSON.stringify(payload)})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data.success){
+        ultimaVisita.ID = data.id;
+        ultimaVisita['Data de Envio'] = new Date().toISOString().split('T')[0];
+        document.getElementById('suc-id').textContent=data.id;
+        // Esconde steps
+        for(var i=0;i<6;i++) document.getElementById('s'+i).style.display='none';
+        document.getElementById('step-nav').style.display='none';
+        document.getElementById('prog').style.width='100%';
+        // Mostra sucesso + preview impressão
+        document.getElementById('print-area').innerHTML = buildRel(ultimaVisita);
+        document.getElementById('form-success').style.display='block';
+        window.scrollTo(0,0);
+      } else {
+        alert('Erro: '+(data.error||'Tente novamente'));
+        btn.disabled=false; btn.textContent='✅ Enviar Relatório';
+      }
+    })
+    .catch(function(){
+      alert('Erro de conexão. Verifique sua internet.');
+      btn.disabled=false; btn.textContent='✅ Enviar Relatório';
+    });
+}
+
+// ══════════════════════════════════════════════════════════════
+// GESTÃO — LOGIN
+// ══════════════════════════════════════════════════════════════
+function fazerLogin(){
+  var u=document.getElementById('login-user').value.trim();
+  var p=document.getElementById('login-pass').value.trim();
+  if(u===ADMIN_USER&&p===ADMIN_PASS){
+    adminLogado=true;
+    document.getElementById('gest-login').style.display='none';
+    document.getElementById('gest-tabs').style.display='flex';
+    showGestPage('dash');
+    loadDash();
+    renderCadastros();
+  } else {
+    document.getElementById('login-err').style.display='block';
+  }
+}
+
+function fazerLogout(){
+  adminLogado=false;
+  document.getElementById('gest-login').style.display='block';
+  document.getElementById('gest-tabs').style.display='none';
+  ['gpage-dash','gpage-hist','gpage-cad'].forEach(function(id){document.getElementById(id).classList.remove('active');});
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+  document.getElementById('login-err').style.display='none';
+}
+
+function showGestPage(p){
+  ['dash','hist','cad'].forEach(function(pg){
+    document.getElementById('gpage-'+pg).classList.remove('active');
+    document.getElementById('gtab-'+pg).classList.remove('active');
+  });
+  document.getElementById('gpage-'+p).classList.add('active');
+  document.getElementById('gtab-'+p).classList.add('active');
+  if(p==='hist') renderTable(allData);
+}
+
+// ══════════════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════════════
+function loadDash(){
+  fetch(API_URL+'?action=get')
+    .then(function(r){return r.json();})
+    .then(function(data){allData=data.visitas||[]; renderDash(allData);})
+    .catch(function(){document.getElementById('empty').style.display='block';});
+}
+
+function applyFilters(){
+  var emp=document.getElementById('df-emp').value;
+  var resp=document.getElementById('df-resp').value;
+  var de=document.getElementById('df-de').value;
+  var ate=document.getElementById('df-ate').value;
+  var f=allData.filter(function(v){
+    if(emp&&v['Empresa']!==emp) return false;
+    if(resp&&v['Responsável']!==resp) return false;
+    if(de&&v['Data da Visita']<de) return false;
+    if(ate&&v['Data da Visita']>ate) return false;
+    return true;
+  });
+  renderDash(f);
+}
+
+function clearFilters(){
+  ['df-emp','df-resp'].forEach(function(id){document.getElementById(id).value='';});
+  ['df-de','df-ate'].forEach(function(id){document.getElementById(id).value='';});
+  renderDash(allData);
+}
+
+function applyHistFilters(){
+  var cli=document.getElementById('hf-cli').value.toLowerCase();
+  var f=allData.filter(function(v){return !(cli&&!(v['Cliente / Evento']||'').toLowerCase().includes(cli));});
+  renderTable(f);
+}
+
+function renderDash(data){
+  var t=data.length;
+  var cc=data.filter(function(v){return v['Houve Contato com Cliente?']==='Sim';}).length;
+  var sc=data.filter(function(v){return v['Houve Contato com Cliente?']==='Não';}).length;
+  var ck=data.filter(function(v){return v['Registro no CheckMob?']==='Sim';}).length;
+  var cp=data.filter(function(v){return v['Itens Pendentes']&&v['Itens Pendentes'].trim();}).length;
+  var al=data.filter(function(v){return v['Prioridade Pendências']==='Alta';}).length;
+  var ot=data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Totalmente';}).length;
+  var op=data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Parcialmente';}).length;
+  document.getElementById('kpi-grid').innerHTML=
+    '<div class="kpi"><div class="n">'+t+'</div><div class="l">Total Visitas</div></div>'+
+    '<div class="kpi g"><div class="n">'+cc+'</div><div class="l">Com Contato</div></div>'+
+    '<div class="kpi r"><div class="n">'+sc+'</div><div class="l">Sem Contato</div></div>'+
+    '<div class="kpi g"><div class="n">'+ck+'</div><div class="l">CheckMob OK</div></div>'+
+    '<div class="kpi y"><div class="n">'+cp+'</div><div class="l">Com Pendências</div></div>'+
+    '<div class="kpi r"><div class="n">'+al+'</div><div class="l">Prioridade Alta</div></div>'+
+    '<div class="kpi g"><div class="n">'+ot+'</div><div class="l">Obj. Totais</div></div>'+
+    '<div class="kpi y"><div class="n">'+op+'</div><div class="l">Obj. Parciais</div></div>';
+  var az='#1F4E79',az2='#2E75B6',vd='#276221',vm='#9C0006',am='#d69e2e';
+  var pm={},pt={};
+  data.forEach(function(v){var m=(v['Data da Visita']||'').substring(0,7);if(m)pm[m]=(pm[m]||0)+1;var tp=v['Tipo de Visita']||'Outros';pt[tp]=(pt[tp]||0)+1;});
+  mkChart('ch-mes','bar',Object.keys(pm).sort(),Object.keys(pm).sort().map(function(m){return pm[m];}),'Visitas',[az2]);
+  mkChart('ch-tipo','doughnut',Object.keys(pt),Object.values(pt),'Visitas',[az,az2,'#5BA3D9',vd,am,vm]);
+  mkChart('ch-chk','doughnut',['Sim','Não','Parcial'],[data.filter(function(v){return v['Registro no CheckMob?']==='Sim';}).length,data.filter(function(v){return v['Registro no CheckMob?']==='Não';}).length,data.filter(function(v){return v['Registro no CheckMob?']==='Parcial';}).length],'Visitas',[vd,vm,am]);
+  mkChart('ch-obj','doughnut',['Totalmente','Parcialmente','Não'],[data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Totalmente';}).length,data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Parcialmente';}).length,data.filter(function(v){return v['Visita Atingiu Objetivos?']==='Não';}).length],'Visitas',[vd,am,vm]);
+  var coords={};
+  data.forEach(function(v){var c=v['Responsável']||'Outros';if(!coords[c])coords[c]={t:0,cc:0,ck:0};coords[c].t++;if(v['Houve Contato com Cliente?']==='Sim')coords[c].cc++;if(v['Registro no CheckMob?']==='Sim')coords[c].ck++;});
+  document.getElementById('coord-grid').innerHTML=Object.keys(coords).length?Object.entries(coords).map(function(e){var n=e[0],s=e[1];return'<div class="coord-card"><h4>👤 '+n+'</h4><div class="cs"><span>Total</span><span>'+s.t+'</span></div><div class="cs"><span>Com contato</span><span>'+s.cc+'</span></div><div class="cs"><span>CheckMob OK</span><span>'+s.ck+'</span></div><div class="cs"><span>Conformidade</span><span>'+(s.t?Math.round(s.ck/s.t*100):0)+'%</span></div></div>';}).join(''):'<p style="color:#aaa;font-size:.84rem">Nenhum dado.</p>';
+  renderTable(data);
+}
+
+function renderTable(data){
+  var tbody=document.getElementById('tbody');
+  var empty=document.getElementById('empty');
+  document.getElementById('cnt').textContent=data.length?'('+data.length+' registro'+(data.length!==1?'s':'')+')'  :'';
+  if(!data.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=data.slice().reverse().map(function(v){
+    var cm=v['Registro no CheckMob?']||'';
+    var pend=v['Itens Pendentes']?v['Prioridade Pendências']||'Sim':'Não';
+    var obj=v['Visita Atingiu Objetivos?']||'';
+    var bcm=cm==='Sim'?'b-sim':cm==='Não'?'b-nao':'b-par';
+    var bp=pend==='Não'?'b-sim':pend==='Alta'?'b-alta':pend==='Média'?'b-media':'b-baixa';
+    var bo=obj==='Totalmente'?'b-sim':obj==='Não'?'b-nao':'b-par';
+    return '<tr><td><strong>'+(v['ID']||'')+'</strong></td><td>'+(v['Data da Visita']||'')+'</td><td>'+(v['Empresa']||'')+'</td><td>'+(v['Responsável']||'')+'</td><td>'+(v['Cliente / Evento']||'')+'</td><td style="font-size:.74rem">'+(v['Tipo de Visita']||'')+'</td><td><span class="badge '+bcm+'">'+(cm||'—')+'</span></td><td><span class="badge '+bp+'">'+pend+'</span></td><td><span class="badge '+bo+'">'+(obj||'—')+'</span></td><td><button class="btn btn-primary" style="padding:4px 9px;font-size:.74rem;border-radius:6px;width:auto;touch-action:manipulation" onclick="abrirRelatorio(this)">🖨️</button></td></tr>';
+  }).join('');
+}
+
+function mkChart(id,type,labels,data,label,colors){
+  if(charts[id]) charts[id].destroy();
+  charts[id]=new Chart(document.getElementById(id).getContext('2d'),{type:type,data:{labels:labels,datasets:[{label:label,data:data,backgroundColor:colors,borderWidth:type==='bar'?0:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:type==='bar'?'none':'bottom',labels:{font:{size:10}}}},scales:type==='bar'?{y:{beginAtZero:true,ticks:{stepSize:1}}}:{}}});
+}
+
+// ══════════════════════════════════════════════════════════════
+// RELATÓRIO
+// ══════════════════════════════════════════════════════════════
+function abrirRelatorio(btn){
+  var row=btn.closest('tr');
+  var id=row.cells[0].querySelector('strong').textContent.trim();
+  var visita=null;
+  for(var i=0;i<allData.length;i++){if(String(allData[i]['ID'])===String(id)){visita=allData[i];break;}}
+  if(visita){document.getElementById('modal-body').innerHTML=buildRel(visita);document.getElementById('modal').classList.add('open');}
+  else{btn.textContent='⏳';fetch(API_URL+'?action=get').then(function(r){return r.json();}).then(function(data){allData=data.visitas||[];btn.textContent='🖨️';for(var i=0;i<allData.length;i++){if(String(allData[i]['ID'])===String(id)){visita=allData[i];break;}}if(visita){document.getElementById('modal-body').innerHTML=buildRel(visita);document.getElementById('modal').classList.add('open');}else alert('Visita não encontrada.');}).catch(function(){btn.textContent='🖨️';alert('Erro ao buscar dados.');});}
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+function bv(val){if(!val)return'<span style="color:#aaa">—</span>';var cls=['Sim','Totalmente','Ótimo','Bom'].indexOf(val)>=0?'ok':val==='Não'?'no':'pa';return'<span class="'+cls+'">'+val+'</span>';}
+
+function buildRel(v){
+  var dt=new Date().toLocaleDateString('pt-BR');
+  var hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  return '<div style="border-bottom:3px solid #1F4E79;padding-bottom:12px;margin-bottom:13px"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><div style="font-size:1.15rem;font-weight:800;color:#1F4E79">GRUPO FIBRAVIT</div><div style="font-size:.78rem;color:#595959;margin-top:2px">Relatório de Visita Operacional</div></div><div style="text-align:right;font-size:.74rem;color:#595959;line-height:1.6"><div>ID: <strong style="color:#1F4E79;font-size:.95rem">'+(v['ID']||'—')+'</strong></div><div>Emitido: '+dt+' às '+hora+'</div><div>Empresa: <strong>'+(v['Empresa']||'—')+'</strong></div></div></div></div>'+
+  '<div class="rel-sec"><div class="rel-bar">1. Identificação da Visita</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px"><div class="rel-row"><span class="rel-lbl">Data:</span><span class="rel-val">'+(v['Data da Visita']||v['data_visita']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Horário:</span><span class="rel-val">'+(v['Horário']||v['horario']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Empresa:</span><span class="rel-val">'+(v['Empresa']||v['empresa']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Responsável:</span><span class="rel-val">'+(v['Responsável']||v['responsavel']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Função:</span><span class="rel-val">'+(v['Função']||v['funcao']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Equipe:</span><span class="rel-val">'+(v['Equipe Presente']||v['equipe']||'—')+'</span></div><div class="rel-row" style="grid-column:1/-1"><span class="rel-lbl">Cliente / Evento:</span><span class="rel-val">'+(v['Cliente / Evento']||v['cliente']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Local / Cidade:</span><span class="rel-val">'+(v['Local / Cidade']||v['local']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Tipo de visita:</span><span class="rel-val">'+(v['Tipo de Visita']||v['tipo_visita']||'—')+'</span></div><div class="rel-row" style="grid-column:1/-1"><span class="rel-lbl">Objetivo:</span><span class="rel-val">'+(v['Objetivo da Visita']||v['objetivo']||'—')+'</span></div></div></div>'+
+  '<div class="rel-sec"><div class="rel-bar">2. Contatos Realizados</div><div class="rel-row"><span class="rel-lbl">Houve contato?</span><span class="rel-val">'+bv(v['Houve Contato com Cliente?']||v['contato_cliente'])+'</span></div><div class="rel-row"><span class="rel-lbl">Pessoas / Motivo:</span><span class="rel-val" style="white-space:pre-line">'+(v['Pessoas Contatadas']||v['pessoas_contatadas']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Próximo contato:</span><span class="rel-val">'+(v['Próximo Contato']||v['proximo_contato']||'—')+'</span></div></div>'+
+  '<div class="rel-sec"><div class="rel-bar">3. Serviços e Atividades</div><div class="rel-row"><span class="rel-lbl">Serviços executados:</span><span class="rel-val">'+(v['Serviços Executados']||v['servicos']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Registro no CheckMob:</span><span class="rel-val">'+bv(v['Registro no CheckMob?']||v['checkmob'])+'</span></div><div class="rel-row"><span class="rel-lbl">Fotos / Evidências:</span><span class="rel-val">'+bv(v['Fotos / Evidências?']||v['fotos'])+'</span></div></div>'+
+  '<div class="rel-sec"><div class="rel-bar">4. Materiais Entregues</div><div class="rel-row"><span class="rel-lbl">Materiais:</span><span class="rel-val">'+(v['Materiais Entregues']||v['materiais']||'Nenhum')+'</span></div><div class="rel-row"><span class="rel-lbl">Recibo / NF:</span><span class="rel-val">'+(v['Recibo / NF']||v['recibo']||'—')+'</span></div></div>'+
+  '<div class="rel-sec"><div class="rel-bar">5. Pendências</div><div class="rel-row"><span class="rel-lbl">Itens pendentes:</span><span class="rel-val" style="white-space:pre-line">'+(v['Itens Pendentes']||v['pendencias']||'Nenhum')+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px 16px"><div class="rel-row"><span class="rel-lbl">Prioridade:</span><span class="rel-val">'+(v['Prioridade Pendências']||v['prioridade']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Responsável:</span><span class="rel-val">'+(v['Responsável Pendência']||v['responsavel_pend']||'—')+'</span></div><div class="rel-row"><span class="rel-lbl">Prazo:</span><span class="rel-val">'+(v['Prazo Pendência']||v['prazo_pend']||'—')+'</span></div></div></div>'+
+  '<div class="rel-sec"><div class="rel-bar">6. Avaliação do Responsável</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px"><div class="rel-row"><span class="rel-lbl">Objetivos atingidos:</span><span class="rel-val">'+bv(v['Visita Atingiu Objetivos?']||v['objetivos_atingidos'])+'</span></div><div class="rel-row"><span class="rel-lbl">Satisfação do cliente:</span><span class="rel-val">'+(v['Satisfação do Cliente']||v['satisfacao']||'—')+'</span></div></div><div class="rel-row"><span class="rel-lbl">Observações:</span><span class="rel-val" style="white-space:pre-line">'+(v['Observações Gerais']||v['observacoes']||'—')+'</span></div></div>'+
+  '<div style="margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:46px"><div style="border-top:2px solid #333;padding-top:7px;text-align:center;font-size:.76rem;color:#444"><strong>'+(v['Responsável']||v['responsavel']||'Responsável')+'</strong><br/>Assinatura</div><div style="border-top:2px solid #333;padding-top:7px;text-align:center;font-size:.76rem;color:#444">Representante do Cliente<br/>Assinatura</div></div>'+
+  '<div style="margin-top:14px;padding-top:7px;border-top:1px solid #D0D8E4;display:flex;justify-content:space-between;font-size:.66rem;color:#aaa"><span>Grupo Fibravit — Uso Interno — Versão 2.0</span><span>Data de envio: '+(v['Data de Envio']||v['data_envio']||new Date().toISOString().split('T')[0])+'</span></div>';
+}
+</script>
+</body>
+</html>
